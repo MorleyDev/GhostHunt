@@ -12,7 +12,6 @@ go_bandit([]() {
 	using namespace bandit;
 
 	describe("Given an ActorView with an EntityComponentStore and ContentFactory", []() {
-
 		emna::content::Texture* mockTexture;
 		emna::test::mocks::MockContentFactory mockContentFactory;
 		std::unique_ptr<emna::ec::EntityComponentStore> entityComponentStore;
@@ -32,9 +31,7 @@ go_bandit([]() {
 		it("Then the content factory is used to load the spritesheet", [&]() {
 			mockContentFactory.mockloadTexture.verifyTimes(1, "resources/spritesheet.png");
 		});
-		
 		describe("When drawing the view with a set of Ghosts and a Player with positions", [&]() {
-			
 			std::map<emna::ec::EntityId, std::tuple<gh::ec::Actor, gh::ec::Position>> entityComponentMap;
 			std::unique_ptr<emna::test::mocks::MockGraphicsDriver> mockGraphicsDriver;
 			
@@ -73,7 +70,6 @@ go_bandit([]() {
 				}
 			});
 			it("Then the player is drawn", [&]() { 
-				
 				emna::maths::point2f pos(playerPosition.x, playerPosition.y);
 				emna::maths::point2f size(gh::ec::Player::Width, gh::ec::Player::Height);
 				emna::maths::point2i texturePos(16, 0);
