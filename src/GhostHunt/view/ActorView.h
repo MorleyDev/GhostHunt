@@ -12,16 +12,15 @@ namespace gh
 		{
 		private:
 			emna::ec::EntityComponentStore &m_entities;
-			std::unique_ptr<emna::content::Texture> m_spriteSheet;
+			std::function<void (emna::GraphicsDriver& , gh::ec::Position)> m_drawGhost;
+			std::function<void (emna::GraphicsDriver&, gh::ec::Position)> m_drawPlayer;
 	
 		public:
-			ActorView(emna::ec::EntityComponentStore &entities, emna::ContentFactory &content);
+			ActorView(emna::ec::EntityComponentStore &entities,
+			          std::function<void (emna::GraphicsDriver&, gh::ec::Position)> drawGhost,
+					  std::function<void (emna::GraphicsDriver&, gh::ec::Position)> drawPlayer);
 			
 			virtual void draw(emna::GraphicsDriver& graphics);
-			
-		private:
-			void drawGhost(gh::ec::Position position, emna::GraphicsDriver& graphics);
-			void drawPlayer(gh::ec::Position position, emna::GraphicsDriver& graphics);
 		};
 	}
 }

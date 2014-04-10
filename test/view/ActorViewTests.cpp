@@ -12,24 +12,19 @@ go_bandit([]() {
 	using namespace bandit;
 
 	describe("Given an ActorView with an EntityComponentStore and ContentFactory", []() {
-		emna::content::Texture* mockTexture;
-		emna::test::mocks::MockContentFactory mockContentFactory;
+
+		emna::test::Mock<void (emna::GraphicsDriver*, gh::ec::Position)> mockGhostRenderingService;
+		emna::test::Mock<void (emna::GraphicsDriver*, gh::ec::Position)> mockPlayerRenderingService;
+		
 		std::unique_ptr<emna::ec::EntityComponentStore> entityComponentStore;
 		std::unique_ptr<gh::view::ActorView> actorView;
 
 		before_each([&]() {
-			mockContentFactory = emna::test::mocks::MockContentFactory();
-			mockContentFactory.mockloadTexture.setReturn([&](std::string name) {
-				auto texture = emna::util::make_unique<emna::test::mocks::content::MockTexture>(52, 95);
-				mockTexture = texture.get();
-				return texture;
-			});
-
 			entityComponentStore = emna::util::make_unique<emna::ec::EntityComponentStore>();
-			actorView = emna::util::make_unique<gh::view::ActorView>(*entityComponentStore, mockContentFactory);
-		});
-		it("Then the content factory is used to load the spritesheet", [&]() {
-			mockContentFactory.mockloadTexture.verifyTimes(1, "resources/spritesheet.png");
+
+			auto grs = [&](emna::GraphicsDriver& g, gh::ec::Position p) { mockGhostRenderingService(&g, p); };
+			auto prs = [&](emna::GraphicsDriver& g, gh::ec::Position p) { mockPlayerRenderingService(&g, p); };
+			actorView = emna::util::make_unique<gh::view::ActorView>(*entityComponentStore, grs, prs);
 		});
 		describe("When drawing the view with a set of Ghosts and a Player with positions", [&]() {
 			std::map<emna::ec::EntityId, std::tuple<gh::ec::Actor, gh::ec::Position>> entityComponentMap;
@@ -61,21 +56,14 @@ go_bandit([]() {
 			});
 			it("Then the ghosts are drawn", [&]() {
 				for(auto e : entityComponentMap) {
-					emna::maths::point2f pos(std::get<1>(e.second).x, std::get<1>(e.second).y);
-					emna::maths::point2f size(gh::ec::Ghost::Width, gh::ec::Ghost::Height);
-					emna::maths::point2i texturePos(0, 0);
-					emna::maths::point2i textureSize(16, 16);
-					
-					mockGraphicsDriver->mockdraw.verify(pos, size, texturePos, textureSize, mockTexture);
+					auto position = std::get<1>(e.second);
+					mockGhostRenderingService.verify(mockGraphicsDriver.get(), 
+					                                 [&](gh::ec::Position pos) { return pos.x == position.x && pos.y == position.y; });
 				}
 			});
-			it("Then the player is drawn", [&]() { 
-				emna::maths::point2f pos(playerPosition.x, playerPosition.y);
-				emna::maths::point2f size(gh::ec::Player::Width, gh::ec::Player::Height);
-				emna::maths::point2i texturePos(16, 0);
-				emna::maths::point2i textureSize(16, 16);
-				
-				mockGraphicsDriver->mockdraw.verify(pos, size, texturePos, textureSize, mockTexture);
+			it("Then the player is drawn", [&]() {
+				mockPlayerRenderingService.verify(mockGraphicsDriver.get(), 
+				                                  [&](gh::ec::Position pos) { return pos.x == playerPosition.x && pos.y == playerPosition.y; });
 			});
 		});
 	});

@@ -3,37 +3,20 @@
 #include "../ec/Ghost.h"
 #include "../ec/Player.h"
 
-gh::view::ActorView::ActorView(emna::ec::EntityComponentStore& entities, emna::ContentFactory& content)
+gh::view::ActorView::ActorView(emna::ec::EntityComponentStore &entities,
+			          std::function<void (emna::GraphicsDriver&, gh::ec::Position)> drawGhost,
+					  std::function<void (emna::GraphicsDriver&, gh::ec::Position)> drawPlayer)
 : m_entities(entities),
-  m_spriteSheet(content.loadTexture("resources/spritesheet.png"))
+  m_drawGhost(drawGhost),
+  m_drawPlayer(drawPlayer)
 {
 }
 
 void gh::view::ActorView::draw(emna::GraphicsDriver& graphics)
 {
 	for(auto actor : m_entities.getAllEntitiesWith<gh::ec::Ghost, gh::ec::Position, gh::ec::Actor>())
-		drawGhost(m_entities.getComponentFor<gh::ec::Position>(actor), graphics);
+		m_drawGhost(graphics, m_entities.getComponentFor<gh::ec::Position>(actor));
 		
 	for(auto actor : m_entities.getAllEntitiesWith<gh::ec::Player, gh::ec::Position, gh::ec::Actor>())
-		drawPlayer(m_entities.getComponentFor<gh::ec::Position>(actor), graphics);
-}
-
-void gh::view::ActorView::drawGhost(gh::ec::Position position, emna::GraphicsDriver& graphics)
-{
-	emna::maths::point2f pos(position.x, position.y);
-	emna::maths::point2f size(gh::ec::Ghost::Width, gh::ec::Ghost::Height);
-	emna::maths::point2i texPos(0,0);
-	emna::maths::point2i texSize(16,16);
-	
-	graphics.draw(pos, size, texPos, texSize, *m_spriteSheet);
-}
-
-void gh::view::ActorView::drawPlayer(gh::ec::Position position, emna::GraphicsDriver& graphics)
-{
-	emna::maths::point2f pos(position.x, position.y);
-	emna::maths::point2f size(gh::ec::Player::Width, gh::ec::Player::Height);
-	emna::maths::point2i texPos(16,0);
-	emna::maths::point2i texSize(16,16);
-	
-	graphics.draw(pos, size, texPos, texSize, *m_spriteSheet);
+		m_drawPlayer(graphics, m_entities.getComponentFor<gh::ec::Position>(actor));
 }
