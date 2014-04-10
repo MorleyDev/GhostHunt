@@ -1,0 +1,20 @@
+language: cpp
+compiler:
+  - gcc
+before_install:
+  - sudo pip install cpp-coveralls
+  - sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
+  - sudo apt-get update -qq
+  - if [ "$CXX" = "g++" ]; then sudo apt-get install -qq g++-4.8; fi
+  - if [ "$CXX" = "g++" ]; then sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 90; fi
+  - if [ "$CXX" = "g++" ]; then sudo update-alternatives --install /usr/bin/gcov gcov /usr/bin/gcov-4.8 90; fi
+  - ./buildscripts/download_header_only_dependencies.sh
+  - ./buildscripts/download_compiled_dependencies.sh Debug
+script:
+  - cmake . -DCMAKE_BUILD_TYPE=Debug -DENABLE_GCOV=ON
+  - cmake --build .
+  - ctest
+  - mkdir gcov
+  - find -name "*.gc*" -exec mv {} gcov/ \;
+  - gcov -d -o gcov/*.gcda
+  - coveralls --exclude test --exclude ext --exclude-pattern '.*CMake[^/]+\.c(?:pp)?' --exclude-pattern 'CheckTypeSize/[^/]+\.c(?:pp)'

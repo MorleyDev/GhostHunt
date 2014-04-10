@@ -3,13 +3,17 @@ project(GHOSTHUNT CXX)
 
 option(ENABLE_TESTS "Enable usage of CTest" ON)
 option(BUILD_UNIT_TESTS "Build the unit tests" ON)
-option(COMPILE_RESOURCES "Compile the resources" ON)
 option(ENABLE_DEBUG "Enable debug behaviours" OFF)
+option(ENABLE_GCOV "Enable GCOV on GCC" OFF)
 
 include(cxx11.cmake)
 
 if(MSVC)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /bigobj")
+	
+elseif(ENABLE_GCOV)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fprofile-arcs -ftest-coverage")
+	set(CMAKE_EXE_LINKER_FLAGS="${CMAKE_EXE_LINKER_FLAGS} -fprofile-arcs -ftest-coverage")
 endif()
 
 set(ZANDER_DEPENDENCIES bandit emna)
