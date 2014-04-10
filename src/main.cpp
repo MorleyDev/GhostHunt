@@ -7,7 +7,7 @@ class MainGame : public emna::Game
 {
 public:
     MainGame()
-	: Game(480, 800)
+	: Game(640, 400)
 	{
 		inputDriver.onClose([this]() { 
 			kill();
