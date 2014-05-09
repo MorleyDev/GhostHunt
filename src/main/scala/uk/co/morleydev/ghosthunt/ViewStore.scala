@@ -1,8 +1,9 @@
-package uk.co.morleydev.ghosthunt.view
+package uk.co.morleydev.ghosthunt
 
 import scala.collection.parallel.mutable.ParSet
 import uk.co.morleydev.ghosthunt.data.event.Event
 import org.jsfml.graphics.RenderTarget
+import uk.co.morleydev.ghosthunt.view.View
 
 class ViewStore {
   private val views: ParSet[View] = ParSet[View]()

@@ -1,4 +1,4 @@
-package uk.co.morleydev.ghosthunt.event
+package uk.co.morleydev.ghosthunt.event.sys
 
 import uk.co.morleydev.ghosthunt.data.event.Event
 import uk.co.morleydev.ghosthunt.view.View

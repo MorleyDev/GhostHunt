@@ -1,14 +1,12 @@
-package uk.co.morleydev.ghosthunt.data.file
+package uk.co.morleydev.ghosthunt.data
 
 import org.jsfml.graphics.Texture
-import java.io.{InputStream, IOException, FileInputStream, File}
-import uk.co.morleydev.ghosthunt.util.using
 import org.jsfml.audio.{SoundBuffer, Music}
+import java.io.{IOException, InputStream}
+import uk.co.morleydev.ghosthunt.util.using
 import scala.io.Source
-import com.lambdaworks.jacks.JacksMapper
 
-class ContentFactory {
-
+trait ContentFactory {
   def loadTexture(filename: String): Option[Texture] =
     loadFile[Texture](filename, input => {
       try {
@@ -48,12 +46,5 @@ class ContentFactory {
         source => Some(source.getLines().mkString("\n"))
       })
 
-  private def loadFile[T](filename : String, handler : InputStream => Option[T]) : Option[T] = {
-    val file = new File(filename)
-    if (file.exists() && file.isFile)
-      None
-    else using(new FileInputStream(file)) {
-      stream => handler(stream)
-    }
-  }
+  protected def loadFile[T](filename : String, handler : InputStream => Option[T]) : Option[T]
 }

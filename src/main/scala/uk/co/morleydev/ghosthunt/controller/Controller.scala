@@ -4,30 +4,31 @@ import uk.co.morleydev.ghosthunt.data.event.Event
 import uk.co.morleydev.ghosthunt.data.net.{ClientId, NetworkMessage}
 import scala.concurrent.duration.Duration
 import uk.co.morleydev.ghosthunt.util.Killable
+import uk.co.morleydev.ghosthunt.model.GameTime
 
 abstract class Controller(events : Seq[String] = Seq[String](),
                           messages : Seq[String] = Seq[String]()) extends Killable {
 
-  def handleEvent(event : Event) = {
+  def handleEvent(event : Event, gameTime : GameTime) = {
     if ( events.contains(event.name) )
-      onEvent(event)
+      onEvent(event, gameTime)
   }
 
-  def handleClientMessage(message : NetworkMessage) = {
+  def handleClientMessage(message : NetworkMessage, gameTime : GameTime) = {
     if ( messages.contains(message.name) )
-      onClientMessage(message)
+      onClientMessage(message, gameTime)
   }
 
-  def handleServerMessage(client : ClientId, message : NetworkMessage) = {
+  def handleServerMessage(client : ClientId, message : NetworkMessage, gameTime : GameTime) = {
     if ( messages.contains(message.name) )
-      onServerMessage(client, message)
+      onServerMessage(client, message, gameTime)
   }
 
-  def update(dt : Duration) = { }
+  def update(gameTime : GameTime) = { }
 
-  protected def onEvent(event : Event) = { }
+  protected def onEvent(event : Event, gameTime : GameTime) = { }
 
-  protected def onClientMessage(message : NetworkMessage) = { }
+  protected def onClientMessage(message : NetworkMessage, gameTime : GameTime) = { }
 
-  protected def onServerMessage(client : ClientId, message : NetworkMessage) = { }
+  protected def onServerMessage(client : ClientId, message : NetworkMessage, gameTime : GameTime) = { }
 }

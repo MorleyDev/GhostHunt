@@ -1,11 +1,12 @@
-package uk.co.morleydev.ghosthunt.test.view
+package uk.co.morleydev.ghosthunt.test
 
 import org.scalatest.FunSpec
 import org.mockito.{Matchers, Mockito}
 import uk.co.morleydev.ghosthunt.data.event.Event
 import org.scalatest.mock.MockitoSugar
-import uk.co.morleydev.ghosthunt.view.{View, ViewStore}
+import uk.co.morleydev.ghosthunt.view.View
 import org.jsfml.graphics.RenderTarget
+import uk.co.morleydev.ghosthunt.ViewStore
 
 class ViewStoreTests extends FunSpec with MockitoSugar {
   describe("Given a store of views with added views") {

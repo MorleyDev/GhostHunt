@@ -4,52 +4,73 @@ import scala.collection.{JavaConversions, GenSeq}
 import java.util.concurrent.{ConcurrentHashMap, ConcurrentLinkedQueue}
 import java.net.{Socket, InetSocketAddress, ServerSocket}
 import java.io._
+import uk.co.morleydev.ghosthunt.util.using
+import scala.concurrent._
+import scala.concurrent.duration.Duration
 
-class Server extends AutoCloseable {
+class Server(implicit val executionContent : ExecutionContext = ExecutionContext.Implicits.global) extends AutoCloseable {
 
   private val connectedUsers = new ConcurrentHashMap[ClientId, (ConcurrentLinkedQueue[NetworkMessage], Thread)]()
 
-  private def createSocketThread(clientId : ClientId, socket : Socket, outboundMessageQueue : ConcurrentLinkedQueue[NetworkMessage]) : Thread =
-    new Thread(new Runnable{
-      override def run(): Unit = {
-        try {
-          val input = socket.getInputStream
-          val output = socket.getOutputStream
-          try {
-            while (mIsConnected) {
-              if (input.available() > 0) {
-                val message = new ObjectInputStream(input).readObject().asInstanceOf[NetworkMessage]
-                receivedMessageQueue.add((clientId, message))
-              }
+  private class SocketThread(clientId: ClientId,
+                             socket: Socket,
+                             outboundMessageQueue: ConcurrentLinkedQueue[NetworkMessage],
+                             receivedMessageQueue: ConcurrentLinkedQueue[(ClientId, NetworkMessage)]) extends Thread {
+    private val inputStream = socket.getInputStream
+    private val outputStream = socket.getOutputStream
 
-              Iterator.continually(outboundMessageQueue.poll())
-                .takeWhile(_ != null)
-                .foreach(message => {
-                new ObjectOutputStream(output).writeObject(message)
-              })
+    private def processReceivedMessages() {
+      Stream.continually(inputStream)
+        .takeWhile(_.available() > 0)
+        .map(s => new ObjectInputStream(inputStream).readObject().asInstanceOf[NetworkMessage])
+        .foreach(msg => receivedMessageQueue.add(clientId, msg))
+    }
 
+    private def processOutboundMessages() {
+      Iterator.continually(outboundMessageQueue.poll())
+        .takeWhile(_ != null)
+        .foreach(message => {
+        new ObjectOutputStream(outputStream).writeObject(message)
+      })
+    }
+
+    private def tick(): Unit = {
+      val readFuture = future {
+        processReceivedMessages()
+      }
+      val writeFuture = future {
+        processOutboundMessages()
+      }
+      Await.result(Future.sequence(Seq(readFuture, writeFuture)), Duration.Inf)
+    }
+
+    override def run(): Unit = {
+      try {
+        using(socket) {
+          socket =>
+            while (isConnected) {
+              tick()
               Thread.sleep(10)
             }
-          } finally {
-            socket.close()
-          }
-        } catch{
-          case e : Exception => e.printStackTrace()
         }
+      } catch {
+        case e: Exception =>
+          e.printStackTrace()
       }
-    })
+    }
+  }
 
   private lazy val serverAcceptThread = new Thread(new Runnable {
     override def run(): Unit = {
-      while(mIsConnected) {
+      while (mIsConnected) {
         try {
           val clientId = new ClientId()
           val clientOutboundQueue = new ConcurrentLinkedQueue[NetworkMessage]()
-          val socketThread = createSocketThread(clientId, socketServer.accept(), clientOutboundQueue)
-          socketThread.start()
+          val socketThread = new SocketThread(clientId, socketServer.accept(), clientOutboundQueue, receivedMessageQueue)
           connectedUsers.put(clientId, (clientOutboundQueue, socketThread))
+          socketThread.start()
         } catch {
-          case e : IOException => ()
+          case e: IOException => ()
         }
       }
     }
@@ -59,17 +80,17 @@ class Server extends AutoCloseable {
   private val receivedMessageQueue = new ConcurrentLinkedQueue[(ClientId, NetworkMessage)]()
   private val socketServer = new ServerSocket()
 
-  def listen(port : Int) : Unit = {
+  def listen(port: Int): Unit = {
     try {
       socketServer.bind(new InetSocketAddress(port))
       mIsConnected = true
       serverAcceptThread.start()
     } catch {
-      case e : IOException => ()
+      case e: IOException => ()
     }
   }
 
-  def close() : Unit = {
+  def close(): Unit = {
     if (mIsConnected) {
       mIsConnected = false
       serverAcceptThread.join()
@@ -78,16 +99,16 @@ class Server extends AutoCloseable {
     }
   }
 
-  def receive() : GenSeq[(ClientId, NetworkMessage)] = {
+  def receive(): GenSeq[(ClientId, NetworkMessage)] = {
     Iterator.continually(receivedMessageQueue.poll())
       .takeWhile(_ != null)
       .toList
   }
 
-  def broadcast(message: NetworkMessage) : Unit = {
-    JavaConversions.iterableAsScalaIterable(connectedUsers.entrySet()).foreach(e => e.getValue._1.add(message))
-  }
+  def send(clientId: ClientId, message: NetworkMessage): Unit =
+    JavaConversions.iterableAsScalaIterable(connectedUsers.entrySet())
+      .foreach(e => e.getValue._1.add(message))
 
-  def isConnected : Boolean =
+  def isConnected: Boolean =
     mIsConnected
 }
