@@ -1,22 +1,21 @@
 package uk.co.morleydev.ghosthunt
 
-import scala.collection.parallel.mutable.ParSet
-import uk.co.morleydev.ghosthunt.data.event.Event
 import org.jsfml.graphics.RenderTarget
 import uk.co.morleydev.ghosthunt.view.View
+import uk.co.morleydev.ghosthunt.model.event.Event
 
 class ViewStore {
-  private val views: ParSet[View] = ParSet[View]()
+  private var views: Seq[View] = Seq[View]()
 
   def add(view: View): Unit =
-    synchronized { views += view }
+    synchronized { views = (views ++ Seq(view)).sortBy(_.height) }
 
   def draw(target : RenderTarget): Unit = {
-    val aliveDeadViews = synchronized { views.partition(_.isAlive) }
-    aliveDeadViews._2.par.foreach(view => synchronized { views -= view })
-    aliveDeadViews._1.seq.foreach(_.draw(target))
+    val aliveViews = synchronized { views.filter(_.isAlive) }
+    aliveViews.seq.foreach(_.draw(target))
+    synchronized { views = aliveViews }
   }
 
   def onEvent(event: Event): Unit =
-    synchronized { views.clone() }.par.foreach(_.handleEvent(event))
+    synchronized { views.filter(_.isAlive) }.par.foreach(_.handleEvent(event))
 }

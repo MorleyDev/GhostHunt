@@ -1,4 +1,4 @@
-package uk.co.morleydev.ghosthunt.data.store
+package uk.co.morleydev.ghosthunt.model.store
 
 import java.util.UUID
 

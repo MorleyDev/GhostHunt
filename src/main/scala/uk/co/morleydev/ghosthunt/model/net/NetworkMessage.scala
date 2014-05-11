@@ -1,4 +1,4 @@
-package uk.co.morleydev.ghosthunt.data.net
+package uk.co.morleydev.ghosthunt.model.net
 
 import scala.concurrent.duration.Duration
 import uk.co.morleydev.ghosthunt.model.GameTime

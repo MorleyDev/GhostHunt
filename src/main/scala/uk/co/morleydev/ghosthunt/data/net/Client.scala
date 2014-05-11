@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentLinkedQueue
 import java.io.{IOException, ObjectOutputStream, ObjectInputStream}
 import scala.concurrent.duration.Duration
 import scala.concurrent.ExecutionContext
+import uk.co.morleydev.ghosthunt.model.net.NetworkMessage
 
 class Client(implicit val executionContent : ExecutionContext = ExecutionContext.Implicits.global) extends AutoCloseable {
 

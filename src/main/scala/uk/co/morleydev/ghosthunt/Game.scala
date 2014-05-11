@@ -15,6 +15,7 @@ import scala.concurrent._
 import scala.concurrent.duration
 import scala.concurrent.ExecutionContext.Implicits.global
 import uk.co.morleydev.ghosthunt.util.Killable
+import uk.co.morleydev.ghosthunt.data.InputMapper
 
 class Game(config : Configuration) extends Killable {
 
@@ -65,6 +66,7 @@ class Game(config : Configuration) extends Killable {
 
   def onStart(): Unit = {
     windowEvents.onClosed(kill)
+    windowEvents.onKey(new InputMapper(config.input, events))
   }
 
   def onEnd(): Unit = {

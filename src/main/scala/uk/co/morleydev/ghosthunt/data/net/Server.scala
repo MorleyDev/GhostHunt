@@ -7,6 +7,7 @@ import java.io._
 import uk.co.morleydev.ghosthunt.util.using
 import scala.concurrent._
 import scala.concurrent.duration.Duration
+import uk.co.morleydev.ghosthunt.model.net.{NetworkMessage, ClientId}
 
 class Server(implicit val executionContent : ExecutionContext = ExecutionContext.Implicits.global) extends AutoCloseable {
 

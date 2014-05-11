@@ -1,12 +1,13 @@
 package uk.co.morleydev.ghosthunt.test.data.net
 
 import org.scalatest.FunSpec
-import uk.co.morleydev.ghosthunt.data.net.{ClientId, NetworkMessage, Client, Server}
+import uk.co.morleydev.ghosthunt.data.net.{Client, Server}
 import scala.collection.GenSeq
 import scala.concurrent.duration.Duration
 import scala.concurrent.duration.SECONDS
 import uk.co.morleydev.ghosthunt.model.GameTime
 import com.fasterxml.jackson.annotation.JsonProperty
+import uk.co.morleydev.ghosthunt.model.net.{NetworkMessage, ClientId}
 
 case class MessageToSend(@JsonProperty("time") value : Int)
 

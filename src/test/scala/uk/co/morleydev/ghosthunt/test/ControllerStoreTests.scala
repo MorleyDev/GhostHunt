@@ -6,10 +6,10 @@ import org.scalatest.mock.MockitoSugar
 import org.mockito.Mockito
 import scala.concurrent.duration.Duration
 import scala.concurrent.duration.SECONDS
-import uk.co.morleydev.ghosthunt.data.event.Event
-import uk.co.morleydev.ghosthunt.data.net.NetworkMessage
 import uk.co.morleydev.ghosthunt.model.GameTime
 import uk.co.morleydev.ghosthunt.ControllerStore
+import uk.co.morleydev.ghosthunt.model.event.Event
+import uk.co.morleydev.ghosthunt.model.net.NetworkMessage
 
 class ControllerStoreTests extends FunSpec with MockitoSugar {
   val duration = new GameTime(Duration(1, SECONDS), Duration(10, SECONDS))

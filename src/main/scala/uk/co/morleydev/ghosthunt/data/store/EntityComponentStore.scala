@@ -3,6 +3,7 @@ package uk.co.morleydev.ghosthunt.data.store
 import scala.collection.{GenSeq, JavaConversions, GenMap}
 import java.util.concurrent.ConcurrentHashMap
 import java.util.Map.Entry
+import uk.co.morleydev.ghosthunt.model.store.EntityId
 
 class EntityComponentStore {
   private val entities = new ConcurrentHashMap[EntityId, ConcurrentHashMap[String, Any]]()

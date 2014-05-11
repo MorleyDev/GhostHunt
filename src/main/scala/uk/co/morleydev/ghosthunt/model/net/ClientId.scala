@@ -1,4 +1,4 @@
-package uk.co.morleydev.ghosthunt.data.net
+package uk.co.morleydev.ghosthunt.model.net
 
 import java.util.UUID
 

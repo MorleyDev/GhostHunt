@@ -1,7 +1,8 @@
 package uk.co.morleydev.ghosthunt.test.data.store
 
 import org.scalatest.FunSpec
-import uk.co.morleydev.ghosthunt.data.store.{EntityId, EntityComponentStore}
+import uk.co.morleydev.ghosthunt.data.store.EntityComponentStore
+import uk.co.morleydev.ghosthunt.model.store.EntityId
 
 class EntityComponentStoreTests extends FunSpec {
 

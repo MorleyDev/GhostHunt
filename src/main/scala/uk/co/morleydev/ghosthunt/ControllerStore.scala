@@ -1,10 +1,10 @@
 package uk.co.morleydev.ghosthunt
 
-import uk.co.morleydev.ghosthunt.data.event.Event
-import uk.co.morleydev.ghosthunt.data.net.{ClientId, NetworkMessage}
 import scala.collection.parallel.mutable.ParSet
 import uk.co.morleydev.ghosthunt.model.GameTime
 import uk.co.morleydev.ghosthunt.controller.Controller
+import uk.co.morleydev.ghosthunt.model.event.Event
+import uk.co.morleydev.ghosthunt.model.net.{NetworkMessage, ClientId}
 
 class ControllerStore {
   private val controllers: ParSet[Controller] = ParSet[Controller]()

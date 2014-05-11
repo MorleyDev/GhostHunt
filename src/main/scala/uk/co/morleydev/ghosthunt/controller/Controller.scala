@@ -1,10 +1,9 @@
 package uk.co.morleydev.ghosthunt.controller
 
-import uk.co.morleydev.ghosthunt.data.event.Event
-import uk.co.morleydev.ghosthunt.data.net.{ClientId, NetworkMessage}
-import scala.concurrent.duration.Duration
 import uk.co.morleydev.ghosthunt.util.Killable
 import uk.co.morleydev.ghosthunt.model.GameTime
+import uk.co.morleydev.ghosthunt.model.event.Event
+import uk.co.morleydev.ghosthunt.model.net.{NetworkMessage, ClientId}
 
 abstract class Controller(events : Seq[String] = Seq[String](),
                           messages : Seq[String] = Seq[String]()) extends Killable {

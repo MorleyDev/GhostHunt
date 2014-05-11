@@ -1,10 +1,11 @@
 package uk.co.morleydev.ghosthunt.test.data.event
 
 import org.scalatest.FunSpec
-import uk.co.morleydev.ghosthunt.data.event.{Event, EventQueue}
+import uk.co.morleydev.ghosthunt.data.event.EventQueue
 import org.scalatest.mock.MockitoSugar
 import scala.concurrent.Await
 import scala.concurrent.ExecutionContext.Implicits.global
+import uk.co.morleydev.ghosthunt.model.event.Event
 
 class EventQueueTests extends FunSpec with MockitoSugar {
 

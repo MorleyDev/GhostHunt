@@ -5,10 +5,12 @@ import java.io.{PrintWriter, File}
 import uk.co.morleydev.ghosthunt.util.using
 import scala.io.Source
 import com.lambdaworks.jacks.JacksMapper
+import org.jsfml.window.Keyboard.Key
 
 case class Configuration(@JsonProperty("window-width") width : Int = 640,
                          @JsonProperty("window-height") height : Int = 480,
-                         @JsonProperty("fullscreen") fullscreen : Boolean = false)
+                         @JsonProperty("fullscreen") fullscreen : Boolean = false,
+                         @JsonProperty("input") input : InputConfiguration = new InputConfiguration())
 
 object Configuration {
   def load(filename : String) : Option[Configuration] = {
