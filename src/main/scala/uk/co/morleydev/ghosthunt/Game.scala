@@ -28,7 +28,7 @@ class Game(config : Configuration) extends Killable {
   private val windowEvents = new SfmlWindowEvents(renderWindow)
 
   private val entities = new EntityComponentStore()
-  private val contentFactory = new ContentFactoryFromFileSystem()
+  private val content = new ContentFactoryFromFileSystem()
   private val maze = new Maze
 
   private val events = new EventQueue()
@@ -53,7 +53,7 @@ class Game(config : Configuration) extends Killable {
       println("Process: [%s]".format(e.name))
       e.name match {
         case event.sys.CreateController.name =>
-          controllers.add(e.data.asInstanceOf[Controller])
+          controllers.add(e.data.asInstanceOf[() => Controller]())
 
         case event.sys.CreateView.name =>
           views.add(e.data.asInstanceOf[View])
@@ -115,16 +115,16 @@ class Game(config : Configuration) extends Killable {
 
     controllers.add(new MenuOptionController(entities))
     controllers.add(new TextBoxController(entities))
-    controllers.add(new TitleScreenController(events, entities))
+    controllers.add(new TitleScreenController(events, entities, content))
     controllers.add(new LocalActorController(entities))
     controllers.add(new ActorPhysicsController(entities, maze))
 
-    views.add(new MenuOptionView(entities, contentFactory))
-    views.add(new TextBoxView(entities, contentFactory))
-    views.add(new TextView(entities, contentFactory))
-    views.add(new MazeView(maze, contentFactory))
-    views.add(new GhostActorView(entities, contentFactory))
-    views.add(new PlayerActorView(entities, contentFactory))
+    views.add(new MenuOptionView(entities, content))
+    views.add(new TextBoxView(entities, content))
+    views.add(new TextView(entities, content))
+    views.add(new MazeView(maze, content))
+    views.add(new GhostActorView(entities, content))
+    views.add(new PlayerActorView(entities, content))
   }
 
   def onEnd(): Unit = {

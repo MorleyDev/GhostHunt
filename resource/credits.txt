@@ -1,1 +1,29 @@
-font.ttf = http://www.dafont.com/sansation.font
+font.ttf = [http://www.dafont.com/sansation.font]
+
+title.ogg:
+	Title: Wings
+	Artist: Halcyonic Falcon X
+	Released under public domain
+		License: http://creativecommons.org/publicdomain/zero/1.0/
+		Source: http://open.commonly.cc/
+
+game.ogg:
+	Title: Those Of Us Who Fight
+	Artist: Halcyonic Falcon X
+	Released under public domain
+		License: http://creativecommons.org/publicdomain/zero/1.0/
+		Source: http://open.commonly.cc/
+
+endgame.ogg:
+	Title: That Which We Have Lost And Forgotten
+	Artist: Halcyonic Falcon X
+	Released under public domain
+		License: http://creativecommons.org/publicdomain/zero/1.0/
+		Source: http://open.commonly.cc/
+
+player_death.ogg:
+	Title: Shot Gun Sound
+	Artist: luminalace
+	Released Under Creative Commons Attribution 3.0 Unported
+		Licence: http://creativecommons.org/licenses/by/3.0/
+		Source: http://soundbible.com/1706-Shot-Gun.html

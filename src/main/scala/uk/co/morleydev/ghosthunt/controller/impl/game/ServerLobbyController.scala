@@ -14,24 +14,28 @@ class ServerLobbyController(entities : EntityComponentStore, server : Server)
   extends Controller(messages = Seq[String](game.JoinGameRequest.name, game.StartGameRequest.name)) {
 
   private var connectedId = -1
-  private val textWaiting = Array[EntityId](entities.createEntity(),
-    entities.createEntity(),
-    entities.createEntity(),
-    entities.createEntity())
+  private val textWaiting = Map(-1 -> entities.createEntity(),
+    0 -> entities.createEntity(),
+    1 -> entities.createEntity(),
+    2 -> entities.createEntity())
 
-  (0 to 3).foreach(i => entities.link(textWaiting(i), "Text", new Text(new Vector2f(10.0f, 40.0f * i + 10.0f), 36.0f, "Waiting...")))
+  (-1 to 2).foreach(i => entities.link(textWaiting(i), "Text", new Text(new Vector2f(10.0f, 40.0f * i + 50.0f), 36.0f, "Waiting...")))
 
   protected override def onServerMessage(client : ClientId, message : NetworkMessage, gameTime : GameTime) = {
     message.name match {
       case game.JoinGameRequest.name =>
         synchronized {
-          val remote = entities.createEntity()
-          entities.link(remote, "Remote", new Remote(client))
-
           val tuple = new AcceptJoinGameRequest(connectedId, message.time)
           server.send(client, game.AcceptJoinGameRequest(tuple, gameTime))
 
-          entities.link(textWaiting(connectedId), "Text", new Text(new Vector2f(10.0f, 40.0f * connectedId + 10.0f), 36.0f, "Connected!"))
+          entities.get("Remote")
+            .map(s => s._2("Remote").asInstanceOf[Remote].id)
+            .foreach(s => server.send(s, game.InformJoinedGame((connectedId, s), gameTime)))
+
+          val remote = entities.createEntity()
+          entities.link(remote, "Remote", new Remote(client))
+          val description = if (connectedId == -1) "Player" else "Ghost"
+          entities.link(textWaiting(connectedId), "Text", new Text(new Vector2f(10.0f, 40.0f * connectedId + 50.0f), 36.0f, "Connected as "+description+"!"))
           connectedId = connectedId + 1
         }
 

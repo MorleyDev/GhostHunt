@@ -8,10 +8,20 @@ import org.jsfml.system.Vector2f
 import uk.co.morleydev.ghosthunt.model.GameTime
 import uk.co.morleydev.ghosthunt.model.event.Event
 import uk.co.morleydev.ghosthunt.model.event.sys
+import uk.co.morleydev.ghosthunt.data.ContentFactory
+import java.io.FileNotFoundException
 
-class TitleScreenController(events : EventQueue, entities : EntityComponentStore) extends Controller {
+class TitleScreenController(events : EventQueue, entities : EntityComponentStore, content : ContentFactory) extends Controller {
   private val menuOptions = entities.createEntity()
   private val titleText = entities.createEntity()
+  private val music = {
+    val music = content.openMusic("resource/title.ogg")
+    if (music.isEmpty)
+      throw new FileNotFoundException()
+    music.get
+  }
+  music.setLoop(true)
+  music.play()
 
   entities.link(menuOptions, "MenuOption",
                new MenuOption(new Vector2f(200.0f, 100.0f),
@@ -34,15 +44,16 @@ class TitleScreenController(events : EventQueue, entities : EntityComponentStore
   }
 
   private def onConnect() {
-    events.enqueue(sys.CreateController(new ClientConnectController(events, entities)))
+    events.enqueue(sys.CreateController(() => new ClientConnectController(events, entities)))
   }
 
   private def onHost() {
-    events.enqueue(sys.CreateController(new ServerHostController(events, entities)))
+    events.enqueue(sys.CreateController(() => new ServerHostController(events, entities)))
   }
 
   private def onQuit() {
     events.enqueue(sys.CloseGame)
+    music.stop()
   }
 
   private def closeController() {

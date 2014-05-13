@@ -8,6 +8,8 @@ import uk.co.morleydev.ghosthunt.model.GameTime
 import uk.co.morleydev.ghosthunt.model.event.Event
 import uk.co.morleydev.ghosthunt.model.event.sys
 import org.jsfml.system.Vector2f
+import uk.co.morleydev.ghosthunt.controller.impl.game.ClientLobbyController
+import uk.co.morleydev.ghosthunt.data.net.Client
 
 class ClientConnectController(events : EventQueue, entities : EntityComponentStore)
   extends Controller(events = Seq(sys.ConnectedToServer.name, sys.FailedConnectToServer.name)) {
@@ -59,6 +61,7 @@ class ClientConnectController(events : EventQueue, entities : EntityComponentSto
         entities.removeEntity(hostBox)
         entities.removeEntity(portBox)
         entities.removeEntity(connectButton)
+        events.enqueue(sys.CreateController(() => new ClientLobbyController(event.data.asInstanceOf[Client], entities, gameTime)))
         kill()
 
       case sys.FailedConnectToServer.name =>

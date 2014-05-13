@@ -13,7 +13,7 @@ package object sys {
   }
 
   val CreateView = new BaseCreateEventWithParam[View]("CreateView")
-  val CreateController = new BaseCreateEventWithParam[Controller]("CreateController")
+  val CreateController = new BaseCreateEventWithParam[() => Controller]("CreateController")
   val UpdateGameRunningTime = new BaseCreateEventWithParam[Duration]("UpdateGameRunningTime")
   val CloseGame = new Event("CloseGame")
 
