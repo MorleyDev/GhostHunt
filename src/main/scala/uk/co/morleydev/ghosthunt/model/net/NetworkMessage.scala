@@ -6,10 +6,16 @@ import com.lambdaworks.jacks.JacksMapper
 
 case class NetworkMessage(name : String, data : String, time : Duration) extends Serializable
 
+class NullNetworkMessage
+
 object NetworkMessage {
   def apply[E: Manifest] (name : String, data : E, time : GameTime) : NetworkMessage =
     new NetworkMessage(name, JacksMapper.writeValueAsString(data), time.totalTime)
 
+  def apply(name : String, time : GameTime) : NetworkMessage =
+    new NetworkMessage(name, JacksMapper.writeValueAsString(new NullNetworkMessage()), time.totalTime)
+
   def extract[E: Manifest](msg : NetworkMessage) : E =
     JacksMapper.readValue[E](msg.data)
+
 }

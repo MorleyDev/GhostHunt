@@ -68,7 +68,7 @@ class Game(config : Configuration) extends Killable {
 
         case event.sys.CheckConnectedToServer.name =>
           if (client.isConnected)
-            events.enqueue(event.sys.ConnectedToServer)
+            events.enqueue(event.sys.ConnectedToServer(client))
           else if (client.isFailed)
             events.enqueue(event.sys.FailedConnectToServer)
           else
@@ -81,7 +81,7 @@ class Game(config : Configuration) extends Killable {
 
         case event.sys.CheckServerHosting.name =>
           if (server.isConnected)
-            events.enqueue(event.sys.ServerHosting)
+            events.enqueue(event.sys.ServerHosting(server))
           else if (server.isFailed)
             events.enqueue(event.sys.FailedHostServer)
           else
@@ -125,11 +125,6 @@ class Game(config : Configuration) extends Killable {
     views.add(new MazeView(maze, contentFactory))
     views.add(new GhostActorView(entities, contentFactory))
     views.add(new PlayerActorView(entities, contentFactory))
-
-    val testPlayer = entities.createEntity()
-    entities.link(testPlayer, "Player", new Player())
-    entities.link(testPlayer, "Actor", new Actor(new Vector2f(48.0f, 48.0f), new Vector2f(ActorDetails.speed, 0.0f)))
-    entities.link(testPlayer, "Local", new Local())
   }
 
   def onEnd(): Unit = {

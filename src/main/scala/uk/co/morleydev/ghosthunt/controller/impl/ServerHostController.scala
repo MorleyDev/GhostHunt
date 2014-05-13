@@ -7,6 +7,8 @@ import uk.co.morleydev.ghosthunt.model.event.{Event, sys}
 import uk.co.morleydev.ghosthunt.model.component.menu.{Text, MenuOption, TextBox}
 import uk.co.morleydev.ghosthunt.model.GameTime
 import org.jsfml.system.Vector2f
+import uk.co.morleydev.ghosthunt.controller.impl.game.ServerLobbyController
+import uk.co.morleydev.ghosthunt.data.net.Server
 
 class ServerHostController(events : EventQueue, entities : EntityComponentStore)
   extends Controller(events = Seq(sys.ServerHosting.name, sys.FailedHostServer.name)) {
@@ -47,6 +49,7 @@ class ServerHostController(events : EventQueue, entities : EntityComponentStore)
       case sys.ServerHosting.name =>
         entities.removeEntity(portBox)
         entities.removeEntity(hostButton)
+        events.enqueue(sys.CreateController(new ServerLobbyController(entities, event.data.asInstanceOf[Server])))
         kill()
 
       case sys.FailedHostServer.name =>
