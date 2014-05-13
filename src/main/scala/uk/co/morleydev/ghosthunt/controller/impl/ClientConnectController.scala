@@ -4,9 +4,10 @@ import uk.co.morleydev.ghosthunt.controller.Controller
 import uk.co.morleydev.ghosthunt.data.store.EntityComponentStore
 import uk.co.morleydev.ghosthunt.data.event.EventQueue
 import uk.co.morleydev.ghosthunt.model.component.menu.{Text, MenuOption, TextBox}
-import uk.co.morleydev.ghosthunt.model.{GameTime, Vector2f}
+import uk.co.morleydev.ghosthunt.model.GameTime
 import uk.co.morleydev.ghosthunt.model.event.Event
 import uk.co.morleydev.ghosthunt.model.event.sys
+import org.jsfml.system.Vector2f
 
 class ClientConnectController(events : EventQueue, entities : EntityComponentStore)
   extends Controller(events = Seq(sys.ConnectedToServer.name, sys.FailedConnectToServer.name)) {
@@ -20,15 +21,18 @@ class ClientConnectController(events : EventQueue, entities : EntityComponentSto
     entities.get(portBox).foreach(ec => entities.unlink(portBox, ec._1))
     entities.get(connectButton).foreach(ec => entities.unlink(connectButton, ec._1))
 
-    entities.link(hostBox, "TextBox", new TextBox(Vector2f(10.0f, 10.0f), Vector2f(620.0f, 32.0f), "Host",
+    entities.link(hostBox, "TextBox", new TextBox(new Vector2f(10.0f, 10.0f), new Vector2f(620.0f, 32.0f), "Host",
       isActive = true))
 
 
-  entities.link(portBox, "TextBox", new TextBox(Vector2f(10.0f, 50.0f), Vector2f(620.0f, 32.0f), "Port",
+  entities.link(portBox, "TextBox", new TextBox(new Vector2f(10.0f, 50.0f), new Vector2f(620.0f, 32.0f), "Port",
       text = "8000",
       filter = _.isDigit))
 
-    entities.link(connectButton, "MenuOption", new MenuOption(Vector2f(160.0f, 100.0f), Vector2f(300.0f, 48.0f), Seq("Connect")))
+    entities.link(connectButton, "MenuOption", new MenuOption(
+      new Vector2f(160.0f, 100.0f),
+      new Vector2f(300.0f, 48.0f),
+      Seq("Connect")))
   }
   initialise()
 
@@ -43,7 +47,7 @@ class ClientConnectController(events : EventQueue, entities : EntityComponentSto
       entities.unlink(portBox, "TextBox")
       entities.unlink(connectButton, "MenuOption")
 
-      entities.link(connectButton, "Text", new Text(Vector2f(10.0f, 50.0f), 64.0f, "Connecting..."))
+      entities.link(connectButton, "Text", new Text(new Vector2f(10.0f, 50.0f), 64.0f, "Connecting..."))
 
       events.enqueue(sys.ConnectToServer((host, port)))
     }

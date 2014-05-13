@@ -1,7 +1,7 @@
 package uk.co.morleydev.ghosthunt
 
 import org.jsfml.graphics.Color
-import uk.co.morleydev.ghosthunt.model.{GameTime, Configuration}
+import uk.co.morleydev.ghosthunt.model.{Configuration, event, GameTime}
 import scala.concurrent.duration.Duration
 import scala.collection.JavaConversions
 import org.jsfml.window.event.Event
@@ -15,10 +15,12 @@ import scala.concurrent.duration
 import scala.concurrent.ExecutionContext.Implicits.global
 import uk.co.morleydev.ghosthunt.util.Killable
 import uk.co.morleydev.ghosthunt.data.InputMapper
-import uk.co.morleydev.ghosthunt.model.event
 import uk.co.morleydev.ghosthunt.controller.impl.{TitleScreenController, TextBoxController, MenuOptionController}
 import uk.co.morleydev.ghosthunt.data.store.{Maze, EntityComponentStore}
-import uk.co.morleydev.ghosthunt.view.impl.{MazeView, TextView, TextBoxView, MenuOptionView}
+import uk.co.morleydev.ghosthunt.view.impl._
+import uk.co.morleydev.ghosthunt.controller.impl.game.{ActorPhysicsController, LocalActorController}
+import uk.co.morleydev.ghosthunt.model.component.game.{ActorDetails, Local, Actor, Player}
+import org.jsfml.system.Vector2f
 
 class Game(config : Configuration) extends Killable {
 
@@ -113,12 +115,21 @@ class Game(config : Configuration) extends Killable {
 
     controllers.add(new MenuOptionController(entities))
     controllers.add(new TextBoxController(entities))
+    controllers.add(new TitleScreenController(events, entities))
+    controllers.add(new LocalActorController(entities))
+    controllers.add(new ActorPhysicsController(entities, maze))
+
     views.add(new MenuOptionView(entities, contentFactory))
     views.add(new TextBoxView(entities, contentFactory))
     views.add(new TextView(entities, contentFactory))
     views.add(new MazeView(maze, contentFactory))
+    views.add(new GhostActorView(entities, contentFactory))
+    views.add(new PlayerActorView(entities, contentFactory))
 
-    controllers.add(new TitleScreenController(events, entities))
+    val testPlayer = entities.createEntity()
+    entities.link(testPlayer, "Player", new Player())
+    entities.link(testPlayer, "Actor", new Actor(new Vector2f(48.0f, 48.0f), new Vector2f(ActorDetails.speed, 0.0f)))
+    entities.link(testPlayer, "Local", new Local())
   }
 
   def onEnd(): Unit = {

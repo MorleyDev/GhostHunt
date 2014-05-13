@@ -1,6 +1,6 @@
 package uk.co.morleydev.ghosthunt.data
 
-import org.jsfml.graphics.{Font, Texture}
+import org.jsfml.graphics.{Color, Image, Font, Texture}
 import org.jsfml.audio.{SoundBuffer, Music}
 import java.io.{IOException, InputStream}
 import uk.co.morleydev.ghosthunt.util.using
@@ -10,8 +10,13 @@ trait ContentFactory {
   def loadTexture(filename: String): Option[Texture] =
     loadFile[Texture](filename, input => {
       try {
+        val image = new Image()
+        image.loadFromStream(input)
+        image.createMaskFromColor(new Color(255,0,255))
+
         val texture = new Texture()
-        texture.loadFromStream(input)
+        texture.loadFromImage(image)
+
         Some(texture)
       } catch {
         case e : IOException => None

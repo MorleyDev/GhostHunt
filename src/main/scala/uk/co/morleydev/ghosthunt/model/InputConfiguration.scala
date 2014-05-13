@@ -6,6 +6,6 @@ import org.jsfml.window.Keyboard.Key
 case class InputConfiguration(@JsonProperty("up") up : String = Key.W.name(),
                               @JsonProperty("down") down : String = Key.S.name(),
                               @JsonProperty("left") left : String = Key.A.name(),
-                              @JsonProperty("right") right : String = Key.A.name(),
+                              @JsonProperty("right") right : String = Key.D.name(),
                               @JsonProperty("activate") activate : String = Key.RETURN.name(),
                               @JsonProperty("cancel") cancel : String = Key.ESCAPE.name())

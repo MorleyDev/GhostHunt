@@ -15,7 +15,7 @@ class ControllerStore {
   def update(gameTime : GameTime) : Unit = {
       val aliveDeadControllers = synchronized { controllers.partition(_.isAlive) }
       aliveDeadControllers._2.foreach(controller => synchronized { controllers -= controller })
-      aliveDeadControllers._1.par.foreach(_.update(gameTime))
+      aliveDeadControllers._1.seq.foreach(_.update(gameTime))
   }
 
   def onEvent(event : Event, gameTime : GameTime) : Unit =
