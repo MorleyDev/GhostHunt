@@ -25,7 +25,7 @@ class ClientConnectController(events : EventQueue, entities : EntityComponentSto
 
 
   entities.link(portBox, "TextBox", new TextBox(Vector2f(10.0f, 50.0f), Vector2f(620.0f, 32.0f), "Port",
-      text = "80",
+      text = "8000",
       filter = _.isDigit,
       isActive = true))
 

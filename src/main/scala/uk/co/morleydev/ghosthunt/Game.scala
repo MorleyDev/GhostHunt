@@ -47,6 +47,7 @@ class Game(config : Configuration) extends Killable {
     controllers.update(gameTime)
 
     events.dequeue().par.foreach(e => {
+      println("Process: [%s]".format(e.name))
       e.name match {
         case event.sys.CreateController.name =>
           controllers.add(e.data.asInstanceOf[Controller])
@@ -62,7 +63,7 @@ class Game(config : Configuration) extends Killable {
           client.connect(hostPort._1, hostPort._2)
           events.enqueue(event.sys.CheckConnectedToServer)
 
-        case event.sys.CheckConnectedToServer =>
+        case event.sys.CheckConnectedToServer.name =>
           if (client.isConnected)
             events.enqueue(event.sys.ConnectedToServer)
           else if (client.isFailed)

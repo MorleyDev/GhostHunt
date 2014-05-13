@@ -20,7 +20,12 @@ class TextBoxView(entities : EntityComponentStore, content : ContentFactory) ext
     entities.get("TextBox")
       .map(f => (f._1, f._2("TextBox").asInstanceOf[TextBox]))
       .foreach(ec => {
-        val text = new Text(ec._2.name + ": " + ec._2.text, defaultFont)
+      val str = if (ec._2.isActive)
+        ec._2.name + ": " + ec._2.text + "|"
+        else
+          ec._2.name + ": " + ec._2.text
+
+      val text = new Text(str, defaultFont)
         text.setPosition(ec._2.position)
         text.setCharacterSize(ec._2.size.y.asInstanceOf[Int])
         text.setColor(if (ec._2.isActive) Color.WHITE else new Color(100,100,100))

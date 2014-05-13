@@ -18,7 +18,7 @@ class ServerHostController(events : EventQueue, entities : EntityComponentStore)
     entities.get(hostButton).foreach(ec => entities.unlink(hostButton, ec._1))
 
     entities.link(portBox, "TextBox", new TextBox(Vector2f(10.0f, 50.0f), Vector2f(620.0f, 32.0f), "Port",
-      text = "80",
+      text = "8000",
       filter = _.isDigit,
       isActive = true))
 

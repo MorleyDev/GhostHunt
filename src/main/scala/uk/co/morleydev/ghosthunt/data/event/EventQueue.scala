@@ -7,8 +7,10 @@ import uk.co.morleydev.ghosthunt.model.event.Event
 class EventQueue {
   private val queue = new ConcurrentLinkedQueue[Event]()
 
-  def enqueue(event : Event) : Unit =
+  def enqueue(event : Event) : Unit = {
+    println("Enqueued: [%s]".format(event.name))
     queue.add(event)
+  }
 
   def dequeue() : GenSeq[Event] =
     Iterator.continually(queue.poll())
