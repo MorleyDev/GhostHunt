@@ -7,7 +7,8 @@ import uk.co.morleydev.ghosthunt.model.component.menu.TextBox
 import uk.co.morleydev.ghosthunt.data.ContentFactory
 import java.io.FileNotFoundException
 
-class TextBoxView(entities : EntityComponentStore, content : ContentFactory) extends View {
+class TextBoxView(entities : EntityComponentStore,
+                  content : ContentFactory) extends View(height = 255) {
 
   private val defaultFont = {
     val font = content.loadFont("resource/font.ttf")

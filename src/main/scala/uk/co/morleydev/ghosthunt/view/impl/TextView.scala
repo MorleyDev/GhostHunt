@@ -7,7 +7,8 @@ import java.io.FileNotFoundException
 import org.jsfml.graphics.{Color, Text, RenderTarget}
 import uk.co.morleydev.ghosthunt.model.component.menu
 
-class TextView(entities : EntityComponentStore, content : ContentFactory) extends View {
+class TextView(entities : EntityComponentStore, content : ContentFactory)
+  extends View(height = 254) {
 
   private val defaultFont = {
     val font = content.loadFont("resource/font.ttf")

@@ -11,15 +11,14 @@ import uk.co.morleydev.ghosthunt.data.event.EventQueue
 import uk.co.morleydev.ghosthunt.data.net.{Server, Client}
 import uk.co.morleydev.ghosthunt.view.View
 import uk.co.morleydev.ghosthunt.data.file.ContentFactoryFromFileSystem
-import scala.concurrent._
 import scala.concurrent.duration
 import scala.concurrent.ExecutionContext.Implicits.global
 import uk.co.morleydev.ghosthunt.util.Killable
 import uk.co.morleydev.ghosthunt.data.InputMapper
 import uk.co.morleydev.ghosthunt.model.event
 import uk.co.morleydev.ghosthunt.controller.impl.{TitleScreenController, TextBoxController, MenuOptionController}
-import uk.co.morleydev.ghosthunt.data.store.EntityComponentStore
-import uk.co.morleydev.ghosthunt.view.impl.{TextView, TextBoxView, MenuOptionView}
+import uk.co.morleydev.ghosthunt.data.store.{Maze, EntityComponentStore}
+import uk.co.morleydev.ghosthunt.view.impl.{MazeView, TextView, TextBoxView, MenuOptionView}
 
 class Game(config : Configuration) extends Killable {
 
@@ -28,6 +27,8 @@ class Game(config : Configuration) extends Killable {
 
   private val entities = new EntityComponentStore()
   private val contentFactory = new ContentFactoryFromFileSystem()
+  private val maze = new Maze
+
   private val events = new EventQueue()
   private val client = new Client()
   private val server = new Server()
@@ -115,6 +116,7 @@ class Game(config : Configuration) extends Killable {
     views.add(new MenuOptionView(entities, contentFactory))
     views.add(new TextBoxView(entities, contentFactory))
     views.add(new TextView(entities, contentFactory))
+    views.add(new MazeView(maze, contentFactory))
 
     controllers.add(new TitleScreenController(events, entities))
   }

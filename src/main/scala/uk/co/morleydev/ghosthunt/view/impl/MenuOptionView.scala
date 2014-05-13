@@ -9,7 +9,8 @@ import uk.co.morleydev.ghosthunt.data.ContentFactory
 import java.io.FileNotFoundException
 
 class MenuOptionView(entityComponentStore : EntityComponentStore,
-                     content : ContentFactory) extends View {
+                     content : ContentFactory)
+  extends View(height = 253) {
 
   private val defaultFont = {
     val font = content.loadFont("resource/font.ttf")
