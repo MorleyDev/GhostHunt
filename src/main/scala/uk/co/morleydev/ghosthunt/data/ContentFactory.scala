@@ -1,6 +1,6 @@
 package uk.co.morleydev.ghosthunt.data
 
-import org.jsfml.graphics.Texture
+import org.jsfml.graphics.{Font, Texture}
 import org.jsfml.audio.{SoundBuffer, Music}
 import java.io.{IOException, InputStream}
 import uk.co.morleydev.ghosthunt.util.using
@@ -37,6 +37,17 @@ trait ContentFactory {
         Some(buffer)
       } catch {
         case e : IOException => None
+      }
+    })
+
+  def loadFont(filename: String) : Option[Font] =
+    loadFile[Font](filename, input => {
+      try {
+        val font = new Font()
+        font.loadFromStream(input)
+        Some(font)
+      } catch {
+        case e: IOException => None
       }
     })
 

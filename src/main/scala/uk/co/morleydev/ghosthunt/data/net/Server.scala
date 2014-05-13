@@ -61,42 +61,58 @@ class Server(implicit val executionContent : ExecutionContext = ExecutionContext
     }
   }
 
-  private lazy val serverAcceptThread = new Thread(new Runnable {
-    override def run(): Unit = {
-      while (mIsConnected) {
-        try {
-          val clientId = new ClientId()
-          val clientOutboundQueue = new ConcurrentLinkedQueue[NetworkMessage]()
-          val socketThread = new SocketThread(clientId, socketServer.accept(), clientOutboundQueue, receivedMessageQueue)
-          connectedUsers.put(clientId, (clientOutboundQueue, socketThread))
-          socketThread.start()
-        } catch {
-          case e: IOException => ()
+  private lazy val serverAcceptThread = new ServerAcceptThread()
+
+  private class ServerAcceptThread extends Thread {
+
+    private var port : Int = 80
+
+    def start(port : Int) {
+      this.port = port
+      start()
+    }
+
+    override def run() : Unit = {
+      try {
+        socketServer.bind(new InetSocketAddress(port))
+        mIsConnected = true
+
+        while (mIsConnected) {
+          accept()
         }
+      } catch {
+        case e: IOException => mIsFailed = true
+      }
+
+    }
+
+    def accept() {
+      try {
+        val clientId = new ClientId()
+        val clientOutboundQueue = new ConcurrentLinkedQueue[NetworkMessage]()
+        val socketThread = new SocketThread(clientId, socketServer.accept(), clientOutboundQueue, receivedMessageQueue)
+        connectedUsers.put(clientId, (clientOutboundQueue, socketThread))
+        socketThread.start()
+      } catch {
+        case e: IOException => ()
       }
     }
-  })
+  }
 
   private var mIsConnected = false
+  private var mIsFailed = false
   private val receivedMessageQueue = new ConcurrentLinkedQueue[(ClientId, NetworkMessage)]()
   private val socketServer = new ServerSocket()
 
-  def listen(port: Int): Unit = {
-    try {
-      socketServer.bind(new InetSocketAddress(port))
-      mIsConnected = true
-      serverAcceptThread.start()
-    } catch {
-      case e: IOException => ()
-    }
-  }
+  def listen(port: Int): Unit =
+    serverAcceptThread.start(port)
 
   def close(): Unit = {
     if (mIsConnected) {
       mIsConnected = false
+      socketServer.close()
       serverAcceptThread.join()
       JavaConversions.iterableAsScalaIterable(connectedUsers.entrySet()).foreach(e => e.getValue._2.join())
-      socketServer.close()
     }
   }
 
@@ -112,4 +128,7 @@ class Server(implicit val executionContent : ExecutionContext = ExecutionContext
 
   def isConnected: Boolean =
     mIsConnected
+
+  def isFailed: Boolean =
+    mIsFailed
 }

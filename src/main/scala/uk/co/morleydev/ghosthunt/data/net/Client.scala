@@ -12,10 +12,26 @@ import uk.co.morleydev.ghosthunt.model.net.NetworkMessage
 class Client(implicit val executionContent : ExecutionContext = ExecutionContext.Implicits.global) extends AutoCloseable {
 
   private class SocketThread(socket : Socket) extends Thread {
+    private var host : String = "localhost"
+    private var port : Int = 80
+
+    def start(host : String, port : Int) : Unit = {
+      this.host = host
+      this.port = port
+      start()
+    }
+
     override def run(): Unit = {
-      while (mIsConnected) {
-        tick()
-        Thread.sleep(10)
+      try {
+        socket.connect(new InetSocketAddress(host, port))
+        mIsConnected = true
+
+        while (mIsConnected) {
+          tick()
+          Thread.sleep(10)
+        }
+      } catch {
+        case e : IOException => mIsFailedConnect = true
       }
     }
 
@@ -43,6 +59,7 @@ class Client(implicit val executionContent : ExecutionContext = ExecutionContext
     }
   }
 
+  private var mIsFailedConnect = false
   private var mIsConnected = false
   private val receivedMessageQueue = new ConcurrentLinkedQueue[NetworkMessage]()
   private val outboundMessageQueue = new ConcurrentLinkedQueue[NetworkMessage]()
@@ -51,13 +68,7 @@ class Client(implicit val executionContent : ExecutionContext = ExecutionContext
   private lazy val networkThread = new SocketThread(jsocket)
 
   def connect(host : String, port : Int) : Unit =
-    try {
-      jsocket.connect(new InetSocketAddress(host, port))
-      mIsConnected = true
-      networkThread.start()
-    } catch {
-      case e : IOException => ()
-    }
+    networkThread.start(host, port)
 
   def close() : Unit =
     if (isConnected) {
@@ -77,4 +88,7 @@ class Client(implicit val executionContent : ExecutionContext = ExecutionContext
 
   def isConnected : Boolean =
     mIsConnected
+
+  def isFailed : Boolean =
+    mIsFailedConnect
 }

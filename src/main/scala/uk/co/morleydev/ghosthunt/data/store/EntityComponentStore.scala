@@ -29,6 +29,22 @@ class EntityComponentStore {
       ec.remove(name)
   }
 
+  def has(id : EntityId, name: String) : Boolean = {
+    val ec = entities.get(id)
+    if (ec == null)
+      false
+    else
+      ec.containsKey(name)
+  }
+
+  def get(id : EntityId) : GenMap[String, Any] = {
+    val ec = entities.get(id)
+    if (ec == null)
+      GenMap[String, Any]()
+    else
+      entrySetToScalaMap(ec.entrySet())
+  }
+
   private def entrySetToScalaMap[K,V](set : java.util.Set[Entry[K,V]]) : GenMap[K,V] = {
     JavaConversions.asScalaSet[Entry[K,V]](set)
                    .map(s => (s.getKey, s.getValue))

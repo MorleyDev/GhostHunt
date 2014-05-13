@@ -16,8 +16,8 @@ class InputMapperTests extends FunSpec with MockitoSugar {
     Key.valueOf(inputConfig.down) -> new Event("MoveLocalDown"),
     Key.valueOf(inputConfig.left) -> new Event("MoveLocalLeft"),
     Key.valueOf(inputConfig.right) -> new Event("MoveLocalRight"),
-    Key.valueOf(inputConfig.activate) -> new Event("Activate"),
-    Key.valueOf(inputConfig.cancel) -> new Event("Cancel"))
+    Key.valueOf(inputConfig.activate) -> new Event("LocalActivate"),
+    Key.valueOf(inputConfig.cancel) -> new Event("LocalCancel"))
 
   expectedMap.foreach(inOut => {
     describe("Given an input mapper and input config") {

@@ -1,4 +1,4 @@
-package uk.co.morleydev.ghosthunt.sfml
+package uk.co.morleydev.ghosthunt.data.sfml
 
 import org.jsfml.graphics.RenderWindow
 import org.jsfml.window.{WindowStyle, VideoMode}

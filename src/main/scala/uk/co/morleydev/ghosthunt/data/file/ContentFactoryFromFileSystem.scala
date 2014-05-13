@@ -9,9 +9,9 @@ class ContentFactoryFromFileSystem extends ContentFactory {
   protected override def loadFile[T](filename : String, handler : InputStream => Option[T]) : Option[T] = {
     val file = new File(filename)
     if (file.exists() && file.isFile)
-      None
-    else using(new FileInputStream(file)) {
-      stream => handler(stream)
-    }
+      using(new FileInputStream(file)) {
+        stream => handler(stream)
+      }
+    else None
   }
 }
