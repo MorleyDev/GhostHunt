@@ -27,7 +27,7 @@ class Game(config : Configuration) extends Killable {
   private val windowEvents = new SfmlWindowEvents(renderWindow)
 
   private val entities = new EntityComponentStore()
-  private val content = new ContentFactoryFromFileSystem()
+  private val content = new ContentFactoryFromFileSystem("resource")
   private val maze = new Maze
 
   private val events = new EventQueue()

@@ -7,6 +7,7 @@ import uk.co.morleydev.ghosthunt.util.using
 import scala.io.Source
 
 trait ContentFactory {
+
   def loadTexture(filename: String): Option[Texture] =
     loadFile[Texture](filename, input => {
       try {
