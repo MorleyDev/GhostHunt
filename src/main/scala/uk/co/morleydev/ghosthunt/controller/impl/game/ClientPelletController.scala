@@ -11,7 +11,7 @@ import java.io.FileNotFoundException
 class ClientPelletController(maze : Maze, content : ContentFactory) extends Controller(messages = Seq(game.RemovePellet.name)) {
 
   val beep = {
-    val beep = content.loadSound("resource/beep.ogg")
+    val beep = content.loadSound("beep.ogg")
     if (beep.isEmpty)
       throw new FileNotFoundException()
     beep.get

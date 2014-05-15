@@ -11,7 +11,7 @@ class TextView(entities : EntityComponentStore, content : ContentFactory)
   extends View(height = 254) {
 
   private val defaultFont = {
-    val font = content.loadFont("resource/font.ttf")
+    val font = content.loadFont("font.ttf")
     if (font.isEmpty)
       throw new FileNotFoundException()
     font.get

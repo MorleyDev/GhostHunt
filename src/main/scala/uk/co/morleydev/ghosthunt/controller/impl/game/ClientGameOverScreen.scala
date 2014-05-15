@@ -14,7 +14,7 @@ import uk.co.morleydev.ghosthunt.data.net.Client
 class ClientGameOverScreen(val isPlayerVictory : Boolean, entities : EntityComponentStore, content : ContentFactory, events : EventQueue, client : Client, maze : Maze) extends Controller {
 
   private val music = {
-    val music = content.openMusic("resource/endgame.ogg")
+    val music = content.openMusic("endgame.ogg")
     if (music.isEmpty)
       throw new FileNotFoundException()
     music.get

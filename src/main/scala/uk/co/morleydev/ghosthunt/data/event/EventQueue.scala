@@ -8,7 +8,6 @@ class EventQueue {
   private val queue = new ConcurrentLinkedQueue[Event]()
 
   def enqueue(event : Event) : Unit = {
-    println("Enqueued: [%s]".format(event.name))
     queue.add(event)
   }
 

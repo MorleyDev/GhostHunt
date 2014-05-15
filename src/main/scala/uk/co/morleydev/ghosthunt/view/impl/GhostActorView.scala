@@ -10,7 +10,7 @@ import uk.co.morleydev.ghosthunt.model.component.game.{ActorDetails, Actor, Ghos
 class GhostActorView(entities : EntityComponentStore, content : ContentFactory) extends View(height = 1) {
 
   val spritesheet = {
-    val texture = content.loadTexture("resource/spritesheet.png")
+    val texture = content.loadTexture("spritesheet.png")
     if (texture.isEmpty)
       throw new FileNotFoundException()
     texture.get

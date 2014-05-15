@@ -15,3 +15,14 @@ class ContentFactoryFromFileSystem(root : String) extends ContentFactory {
     else None
   }
 }
+
+class ContentFactoryFromResource extends ContentFactory {
+
+  protected override def loadFile[T](filename: String, handler: InputStream => Option[T]): Option[T] = {
+    val stream = getClass.getResourceAsStream("/" + filename)
+    if (stream != null && stream.available() > 0)
+      handler(stream)
+    else
+      None
+  }
+}

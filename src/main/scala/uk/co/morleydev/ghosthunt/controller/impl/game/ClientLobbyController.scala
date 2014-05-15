@@ -56,7 +56,6 @@ class ClientLobbyController(entities : EntityComponentStore,
 
       case game.InformJoinedGame.name =>
         val inform = game.InformJoinedGame.extract(message)
-        println("Client Join: " + inform._2)
         val them = entities.createEntity()
         entities.link(them, "Remote", new Remote(new ClientId(UUID.fromString(inform._2))))
 
@@ -71,7 +70,6 @@ class ClientLobbyController(entities : EntityComponentStore,
 
       case game.InformLeftGame.name =>
         val inform = new ClientId(UUID.fromString(game.InformLeftGame.extract(message)))
-        println("Left Client: " + inform)
         entities.get("Remote")
           .map(s => (s._1, s._2("Remote").asInstanceOf[Remote].id))
           .filter(s => s._2 == inform)

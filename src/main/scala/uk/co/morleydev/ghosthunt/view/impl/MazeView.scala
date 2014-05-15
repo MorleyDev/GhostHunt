@@ -13,7 +13,7 @@ class MazeView(maze : Maze,
                content : ContentFactory) extends View(height = 0) {
 
   val spritesheet = {
-    val texture = content.loadTexture("resource/spritesheet.png")
+    val texture = content.loadTexture("spritesheet.png")
     if (texture.isEmpty)
       throw new FileNotFoundException()
     texture.get

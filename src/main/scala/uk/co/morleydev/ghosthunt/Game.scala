@@ -10,7 +10,7 @@ import uk.co.morleydev.ghosthunt.controller.Controller
 import uk.co.morleydev.ghosthunt.data.event.EventQueue
 import uk.co.morleydev.ghosthunt.data.net.{Server, Client}
 import uk.co.morleydev.ghosthunt.view.View
-import uk.co.morleydev.ghosthunt.data.file.ContentFactoryFromFileSystem
+import uk.co.morleydev.ghosthunt.data.file.{ContentFactoryFromResource, ContentFactoryFromFileSystem}
 import scala.concurrent.duration
 import scala.concurrent.ExecutionContext.Implicits.global
 import uk.co.morleydev.ghosthunt.util.Killable
@@ -27,7 +27,7 @@ class Game(config : Configuration) extends Killable {
   private val windowEvents = new SfmlWindowEvents(renderWindow)
 
   private val entities = new EntityComponentStore()
-  private val content = new ContentFactoryFromFileSystem("resource")
+  private val content = new ContentFactoryFromResource()
   private val maze = new Maze
 
   private val events = new EventQueue()
@@ -51,7 +51,6 @@ class Game(config : Configuration) extends Killable {
     server.receive().seq.foreach(m => controllers.onServerMessage(m._1, m._2, gameTime))
 
     events.dequeue().par.foreach(e => {
-      println("Process: [%s]".format(e.name))
       e.name match {
         case event.sys.CreateController.name =>
           controllers.add(e.data.asInstanceOf[() => Controller]())

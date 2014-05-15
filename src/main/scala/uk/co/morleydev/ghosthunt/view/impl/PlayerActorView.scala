@@ -11,7 +11,7 @@ import org.jsfml.system.Vector2f
 class PlayerActorView(entities : EntityComponentStore, content : ContentFactory) extends View(height = 1) {
 
   val spritesheet = {
-    val texture = content.loadTexture("resource/spritesheet.png")
+    val texture = content.loadTexture("spritesheet.png")
     if (texture.isEmpty)
       throw new FileNotFoundException()
     texture.get

@@ -14,7 +14,7 @@ class ScoreView(content : ContentFactory, maze : Maze)
   private var showScore = false
 
   private val defaultFont = {
-    val font = content.loadFont("resource/font.ttf")
+    val font = content.loadFont("font.ttf")
     if (font.isEmpty)
       throw new FileNotFoundException()
     font.get

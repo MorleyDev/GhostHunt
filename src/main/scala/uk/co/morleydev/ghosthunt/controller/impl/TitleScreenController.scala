@@ -15,7 +15,7 @@ class TitleScreenController(events : EventQueue, entities : EntityComponentStore
   private val menuOptions = entities.createEntity()
   private val titleText = entities.createEntity()
   private val music = {
-    val music = content.openMusic("resource/title.ogg")
+    val music = content.openMusic("title.ogg")
     if (music.isEmpty)
       throw new FileNotFoundException()
     music.get

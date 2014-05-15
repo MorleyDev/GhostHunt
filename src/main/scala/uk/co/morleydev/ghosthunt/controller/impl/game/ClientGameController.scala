@@ -14,14 +14,14 @@ import uk.co.morleydev.ghosthunt.data.store.{Maze, EntityComponentStore}
 class ClientGameController(content : ContentFactory, events : EventQueue, entities : EntityComponentStore, client : Client, maze : Maze)
   extends Controller(messages = Seq(net.game.GameOver.name, net.game.ReturnToLobby.name)) {
   private val music = {
-    val music = content.openMusic("resource/game.ogg")
+    val music = content.openMusic("game.ogg")
     if (music.isEmpty)
       throw new FileNotFoundException()
     music.get
   }
 
   private val deathSound = {
-    val sound = content.loadSound("resource/player_death.ogg")
+    val sound = content.loadSound("player_death.ogg")
     if (sound.isEmpty)
       throw new FileNotFoundException()
     sound.get
