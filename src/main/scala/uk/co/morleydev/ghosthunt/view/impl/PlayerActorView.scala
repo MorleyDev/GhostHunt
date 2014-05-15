@@ -16,7 +16,10 @@ class PlayerActorView(entities : EntityComponentStore, content : ContentFactory)
       throw new FileNotFoundException()
     texture.get
   }
-  val playerSprite = new Sprite(spritesheet, new IntRect(6, 95, 28, 28))
+  val playerRightSprite = new Sprite(spritesheet, new IntRect(6, 95, 28, 28))
+  val playerLeftSprite = new Sprite(spritesheet, new IntRect(6, 123, 28, 28))
+  val playerUpSprite = new Sprite(spritesheet, new IntRect(6, 151, 28, 28))
+  val playerDownSprite = new Sprite(spritesheet, new IntRect(6, 179, 28, 28))
 
   private def isWithinGhostsSight(pos: Vector2f): Boolean = {
     entities.get("Ghost", "Actor")
@@ -37,24 +40,18 @@ class PlayerActorView(entities : EntityComponentStore, content : ContentFactory)
       .filter(ec => isUnlimitedView || isWithinGhostsSight(ec._2.position))
       .foreach(ec => {
 
-      playerSprite.setPosition(ec._2.position)
-      playerSprite.setOrigin(ActorDetails.halfDimensions)
-
-      if (ec._2.direction.x < 0.0f) {
-        playerSprite.setScale(1.0f, 1.0f)
-        playerSprite.setRotation(180.0f)
+      val sprite = if (ec._2.direction.x < 0.0f) {
+        playerLeftSprite
       } else if (ec._2.direction.y < 0.0f) {
-        playerSprite.setRotation(270.0f)
-        playerSprite.setScale(1.0f, 1.0f)
+        playerUpSprite
       } else if (ec._2.direction.y > 0.0f) {
-        playerSprite.setRotation(90.0f)
-        playerSprite.setScale(1.0f, 1.0f)
+        playerDownSprite
       } else {
-        playerSprite.setScale(1.0f, 1.0f)
-        playerSprite.setRotation(0.0f)
+        playerRightSprite
       }
-
-      drawable.draw(playerSprite)
+      sprite.setPosition(ec._2.position)
+      sprite.setOrigin(ActorDetails.halfDimensions)
+      drawable.draw(sprite)
     })
   }
 }

@@ -15,9 +15,18 @@ class GhostActorView(entities : EntityComponentStore, content : ContentFactory) 
       throw new FileNotFoundException()
     texture.get
   }
-  val ghostSprite = Map[Int, Sprite](0 -> new Sprite(spritesheet, new IntRect(39, 99, 27, 27)),
-    1 -> new Sprite(spritesheet, new IntRect(71, 99, 27, 27)),
-    2 -> new Sprite(spritesheet, new IntRect(100, 100, 27, 27)))
+  val ghostRightSprite = Map[Int, Sprite](0 -> new Sprite(spritesheet, new IntRect(39, 99, 28, 28)),
+    1 -> new Sprite(spritesheet, new IntRect(67, 99, 28, 28)),
+    2 -> new Sprite(spritesheet, new IntRect(95, 99, 28, 28)))
+  val ghostLeftSprite = Map[Int, Sprite](0 -> new Sprite(spritesheet, new IntRect(39, 127, 28, 28)),
+    1 -> new Sprite(spritesheet, new IntRect(67, 127, 28, 28)),
+    2 -> new Sprite(spritesheet, new IntRect(95, 127, 28, 28)))
+  val ghostUpSprite = Map[Int, Sprite](0 -> new Sprite(spritesheet, new IntRect(39, 155, 28, 28)),
+    1 -> new Sprite(spritesheet, new IntRect(67, 155, 28, 28)),
+    2 -> new Sprite(spritesheet, new IntRect(95, 155, 28, 28)))
+  val ghostDownSprite = Map[Int, Sprite](0 -> new Sprite(spritesheet, new IntRect(39, 183, 28, 28)),
+    1 -> new Sprite(spritesheet, new IntRect(67, 183, 28, 28)),
+    2 -> new Sprite(spritesheet, new IntRect(95, 183, 28, 28)))
 
   override def draw(drawable: RenderTarget): Unit = {
 
@@ -26,24 +35,18 @@ class GhostActorView(entities : EntityComponentStore, content : ContentFactory) 
       .toList
       .sortBy(_._2.id)
       .foreach(ec => {
-      val sprite = ghostSprite(ec._2.id)
+      val sprite = if (ec._3.direction.x < 0.0f) {
+        ghostLeftSprite(ec._2.id)
+      } else if (ec._3.direction.y < 0.0f) {
+        ghostUpSprite(ec._2.id)
+      } else if (ec._3.direction.y > 0.0f) {
+        ghostDownSprite(ec._2.id)
+      } else {
+        ghostRightSprite(ec._2.id)
+      }
+
       sprite.setPosition(ec._3.position)
       sprite.setOrigin(ActorDetails.halfDimensions)
-      sprite.setScale(1.0f, 1.0f)
-
-      if (ec._3.direction.x < 0.0f) {
-        sprite.setScale(1.0f, 1.0f)
-        sprite.setRotation(180.0f)
-      } else if (ec._3.direction.y < 0.0f) {
-        sprite.setRotation(270.0f)
-        sprite.setScale(1.0f, 1.0f)
-      } else if (ec._3.direction.y > 0.0f) {
-        sprite.setRotation(90.0f)
-        sprite.setScale(1.0f, 1.0f)
-      } else {
-        sprite.setScale(1.0f, 1.0f)
-        sprite.setRotation(0.0f)
-      }
 
       drawable.draw(sprite)
     })

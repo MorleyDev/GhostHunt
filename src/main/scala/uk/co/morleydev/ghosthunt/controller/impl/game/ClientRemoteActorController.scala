@@ -36,14 +36,10 @@ class ClientRemoteActorController(entities: EntityComponentStore) extends Contro
 
   private def moveInDirection(client : ClientId, dir: Vector2f, pos : Vector2f, latency : Float) {
 
-    def moveActorInDirection(dir : Vector2f, actor : Actor) : Actor =
-      actor.copy(direction = dir)
-
     entities.get("Actor", "Remote")
       .filter(ec => ec._2("Remote").asInstanceOf[Remote].id == client)
       .map(ec => (ec._1, ec._2("Actor").asInstanceOf[Actor]))
-      .map(ec => (ec._1, ec._2.copy(position = Vector2f.add(pos, Vector2f.mul(dir, latency)))))
-      .map(ec => (ec._1, moveActorInDirection(dir, ec._2)))
+      .map(ec => (ec._1, ec._2.copy(position = Vector2f.add(pos, Vector2f.mul(dir, latency)), direction = dir)))
       .foreach(ec => entities.link(ec._1, "Actor", ec._2))
   }
 }
