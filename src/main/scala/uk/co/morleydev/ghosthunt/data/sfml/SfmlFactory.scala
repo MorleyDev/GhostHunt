@@ -1,7 +1,8 @@
 package uk.co.morleydev.ghosthunt.data.sfml
 
-import org.jsfml.graphics.RenderWindow
+import org.jsfml.graphics.{FloatRect, View, RenderWindow}
 import org.jsfml.window.{WindowStyle, VideoMode}
+import org.jsfml.system.Vector2f
 
 object SfmlFactory {
   def create(fullscreen : Boolean, width : Int, height : Int) : RenderWindow = {
@@ -21,6 +22,8 @@ object SfmlFactory {
 
     val windowStyle = if (fullscreen) WindowStyle.FULLSCREEN else WindowStyle.TITLEBAR | WindowStyle.CLOSE
 
-    new RenderWindow(videoMode, "Ghost Hunt", windowStyle)
+    val window = new RenderWindow(videoMode, "Ghost Hunt", windowStyle)
+    window.setView(new View(new FloatRect(new Vector2f(0.0f, 0.0f), new Vector2f(640.0f, 480.0f))))
+    window
   }
 }

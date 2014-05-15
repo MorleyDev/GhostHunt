@@ -1,8 +1,7 @@
 package uk.co.morleydev.ghosthunt.controller.impl.game
 
 import uk.co.morleydev.ghosthunt.controller.Controller
-import uk.co.morleydev.ghosthunt.model.GameTime
-import uk.co.morleydev.ghosthunt.model.net
+import uk.co.morleydev.ghosthunt.model.{event, GameTime, net}
 import uk.co.morleydev.ghosthunt.model.event.sys
 import uk.co.morleydev.ghosthunt.data.store.{Maze, EntityComponentStore}
 import uk.co.morleydev.ghosthunt.data.net.Server
@@ -45,6 +44,7 @@ class ServerGameController(entities : EntityComponentStore, events : EventQueue,
         .map(s => (s._1, s._2("Remote").asInstanceOf[Remote].id))
         .foreach(s => { entities.removeEntity(s._1); server.send(s._2, net.game.GameOver(true, gameTime)); })
 
+      events.enqueue(event.game.HideScore)
       events.enqueue(sys.CreateController(() => new ServerLobbyController(entities, server, events, maze)))
       kill()
     }
@@ -53,6 +53,7 @@ class ServerGameController(entities : EntityComponentStore, events : EventQueue,
         .map(s => (s._1, s._2("Remote").asInstanceOf[Remote].id))
         .foreach(s => { entities.removeEntity(s._1); server.send(s._2, net.game.GameOver(false, gameTime)); })
 
+      events.enqueue(event.game.HideScore)
       events.enqueue(sys.CreateController(() => new ServerLobbyController(entities, server, events, maze)))
       kill()
     }
@@ -65,6 +66,8 @@ class ServerGameController(entities : EntityComponentStore, events : EventQueue,
           .map(s => (s._1, s._2("Remote").asInstanceOf[Remote].id))
           .filter(s => s._2 != client)
           .foreach(s => { entities.removeEntity(s._1); server.send(s._2, net.game.ReturnToLobby(gameTime)); })
+
+        events.enqueue(event.game.HideScore)
         events.enqueue(sys.CreateController(() => new ServerLobbyController(entities, server, events, maze)))
         kill()
     }
