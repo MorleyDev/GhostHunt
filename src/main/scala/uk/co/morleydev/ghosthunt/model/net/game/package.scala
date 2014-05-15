@@ -28,6 +28,8 @@ package object game {
   val GameOver = new BaseCreateNetworkMessageWithParam[Boolean]("GameOver") // True = is player victory, false = is ghost
   val ReturnToLobby = new BaseCreateNetworkMessage("ReturnToLobby")
 
+  val RemovePellet = new BaseCreateNetworkMessageWithParam[(Int,Int)]("RemovePellet")
+
   val Disconnected = new BaseCreateNetworkMessage("Disconnected")
   val Poke = new BaseCreateNetworkMessage("Poke")
 }

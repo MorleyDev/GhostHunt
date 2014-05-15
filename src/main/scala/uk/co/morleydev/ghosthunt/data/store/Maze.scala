@@ -1,5 +1,7 @@
 package uk.co.morleydev.ghosthunt.data.store
 
+import java.util.concurrent.ConcurrentHashMap
+
 object CellType extends Enumeration {
   val Empty = Value("Empty")
   val Wall = Value("Wall")
@@ -37,4 +39,31 @@ class Maze {
     case 1 => CellType.Wall
     case _ => CellType.Empty
   }
+
+  class Pellets(maze : Maze) {
+    private val pellets = new ConcurrentHashMap[(Int, Int), Boolean]()
+    private var pelletCount = 0
+    reset()
+
+    def reset() = {
+      pellets.clear()
+      pelletCount = 0
+      (0 to maze.getWidth-1).map(x => {
+        (0 to maze.getHeight-1).map(y => {
+          val containsPellet = maze.get(x, y) == CellType.Empty
+          pellets.put((x,y), containsPellet)
+          if (containsPellet)
+            pelletCount = pelletCount + 1
+        })
+      })
+    }
+
+    def get(x : Int, y : Int) : Boolean = pellets.get((x,y))
+
+    def remove(x : Int, y : Int) : Unit = if ( pellets.put((x,y), false) ) pelletCount = pelletCount - 1
+
+    def countPellets = pelletCount
+  }
+  var pellets = new Pellets(this)
+
 }

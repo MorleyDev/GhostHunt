@@ -1,7 +1,7 @@
 package uk.co.morleydev.ghosthunt.controller.impl
 
 import uk.co.morleydev.ghosthunt.controller.Controller
-import uk.co.morleydev.ghosthunt.data.store.EntityComponentStore
+import uk.co.morleydev.ghosthunt.data.store.{Maze, EntityComponentStore}
 import uk.co.morleydev.ghosthunt.data.event.EventQueue
 import uk.co.morleydev.ghosthunt.data.net.Client
 import uk.co.morleydev.ghosthunt.model.component.menu.{Text, MenuOption, TextBox}
@@ -12,7 +12,7 @@ import org.jsfml.system.Vector2f
 import uk.co.morleydev.ghosthunt.controller.impl.game.ClientLobbyController
 import uk.co.morleydev.ghosthunt.data.ContentFactory
 
-class ClientConnectController(events : EventQueue, entities : EntityComponentStore, content : ContentFactory)
+class ClientConnectController(events : EventQueue, entities : EntityComponentStore, content : ContentFactory, maze : Maze)
   extends Controller(events = Seq(sys.ConnectedToServer.name, sys.FailedConnectToServer.name)) {
 
   private val hostBox = entities.createEntity()
@@ -62,7 +62,7 @@ class ClientConnectController(events : EventQueue, entities : EntityComponentSto
         entities.removeEntity(hostBox)
         entities.removeEntity(portBox)
         entities.removeEntity(connectButton)
-        events.enqueue(sys.CreateController(() => new ClientLobbyController(entities, event.data.asInstanceOf[Client], events, gameTime, content)))
+        events.enqueue(sys.CreateController(() => new ClientLobbyController(entities, event.data.asInstanceOf[Client], events, gameTime, content, maze)))
         kill()
 
       case sys.FailedConnectToServer.name =>

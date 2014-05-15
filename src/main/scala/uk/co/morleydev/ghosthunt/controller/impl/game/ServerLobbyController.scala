@@ -3,7 +3,7 @@ package uk.co.morleydev.ghosthunt.controller.impl.game
 import uk.co.morleydev.ghosthunt.controller.Controller
 import uk.co.morleydev.ghosthunt.model.net.{AcceptJoinGameRequest, NetworkMessage, ClientId, game}
 import uk.co.morleydev.ghosthunt.model.GameTime
-import uk.co.morleydev.ghosthunt.data.store.EntityComponentStore
+import uk.co.morleydev.ghosthunt.data.store.{Maze, EntityComponentStore}
 import uk.co.morleydev.ghosthunt.model.component.game.{Actor, Ghost, Player, Remote}
 import uk.co.morleydev.ghosthunt.data.net.Server
 import uk.co.morleydev.ghosthunt.model.event.sys
@@ -13,8 +13,9 @@ import org.jsfml.system.Vector2f
 import java.util.concurrent.ConcurrentLinkedQueue
 import uk.co.morleydev.ghosthunt.data.event.EventQueue
 
-class ServerLobbyController(entities : EntityComponentStore, server : Server, events : EventQueue)
+class ServerLobbyController(entities : EntityComponentStore, server : Server, events : EventQueue, maze : Maze)
   extends Controller(messages = Seq[String](game.JoinGameRequest.name, game.Disconnected.name)) {
+  maze.pellets.reset()
 
   private val textWaiting = Map[Int, EntityId](-1 -> entities.createEntity(),
     0 -> entities.createEntity(),
@@ -44,7 +45,7 @@ class ServerLobbyController(entities : EntityComponentStore, server : Server, ev
         .map(s => s._2("Remote").asInstanceOf[Remote].id)
         .foreach(s => server.send(s, game.StartGame(gameTime)))
 
-      events.enqueue(sys.CreateController(() => new ServerGameController(entities, events, server)))
+      events.enqueue(sys.CreateController(() => new ServerGameController(entities, events, server, maze)))
       kill()
     })
   }

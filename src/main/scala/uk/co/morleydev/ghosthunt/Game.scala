@@ -116,12 +116,13 @@ class Game(config : Configuration) extends Killable {
 
     controllers.add(new MenuOptionController(entities))
     controllers.add(new TextBoxController(entities))
-    controllers.add(new TitleScreenController(events, entities, content))
+    controllers.add(new TitleScreenController(events, entities, content, maze))
     controllers.add(new LocalActorController(entities, client))
     controllers.add(new ServerRemoteActorController(entities, server))
     controllers.add(new ClientRemoteActorController(entities))
     controllers.add(new ActorPhysicsController(entities, maze))
     controllers.add(new ServerPokeController(entities, server))
+    controllers.add(new ClientPelletController(maze, content))
 
     views.add(new MenuOptionView(entities, content))
     views.add(new TextBoxView(entities, content))

@@ -1,7 +1,7 @@
 package uk.co.morleydev.ghosthunt.controller.impl.game
 
 import uk.co.morleydev.ghosthunt.controller.Controller
-import uk.co.morleydev.ghosthunt.data.store.EntityComponentStore
+import uk.co.morleydev.ghosthunt.data.store.{Maze, EntityComponentStore}
 import uk.co.morleydev.ghosthunt.data.ContentFactory
 import uk.co.morleydev.ghosthunt.model.component.menu.{MenuOption, Text}
 import org.jsfml.system.Vector2f
@@ -11,7 +11,7 @@ import uk.co.morleydev.ghosthunt.model.event.sys
 import uk.co.morleydev.ghosthunt.data.event.EventQueue
 import uk.co.morleydev.ghosthunt.data.net.Client
 
-class ClientGameOverScreen(val isPlayerVictory : Boolean, entities : EntityComponentStore, content : ContentFactory, events : EventQueue, client : Client) extends Controller {
+class ClientGameOverScreen(val isPlayerVictory : Boolean, entities : EntityComponentStore, content : ContentFactory, events : EventQueue, client : Client, maze : Maze) extends Controller {
 
   private val music = {
     val music = content.openMusic("resource/endgame.ogg")
@@ -25,8 +25,10 @@ class ClientGameOverScreen(val isPlayerVictory : Boolean, entities : EntityCompo
   val victoryTextEntity = entities.createEntity()
   if (isPlayerVictory)
     entities.link(victoryTextEntity, "Text", new Text(new Vector2f(10.0f, 10.0f), 64.0f, "The player was\nVictorious!"))
-  else
+  else {
     entities.link(victoryTextEntity, "Text", new Text(new Vector2f(10.0f, 10.0f), 64.0f, "The player failed.\nGo Ghosts!"))
+    entities.get("Player").foreach(s => entities.removeEntity(s._1))
+  }
 
   val returnToLobbyButton = entities.createEntity()
   entities.link(returnToLobbyButton, "MenuOption", new MenuOption(new Vector2f(10.0f, 300.0f), new Vector2f(200.0f, 40.0f), Seq("Return To Lobby")))
@@ -38,7 +40,7 @@ class ClientGameOverScreen(val isPlayerVictory : Boolean, entities : EntityCompo
       entities.get("Actor").foreach(s => entities.removeEntity(s._1))
       entities.removeEntity(victoryTextEntity)
       entities.removeEntity(returnToLobbyButton)
-      events.enqueue(sys.CreateController(() => new ClientLobbyController(entities, client, events, gameTime, content)))
+      events.enqueue(sys.CreateController(() => new ClientLobbyController(entities, client, events, gameTime, content, maze)))
     }
   }
 }

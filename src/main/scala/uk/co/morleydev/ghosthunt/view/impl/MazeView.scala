@@ -18,6 +18,9 @@ class MazeView(maze : Maze,
       throw new FileNotFoundException()
     texture.get
   }
+
+  val pelletSprite = new Sprite(spritesheet, new IntRect(169, 91, 8, 8))
+
   // (up down left right)
   val sprites = Map((false, true, false, true) -> new Sprite(spritesheet, new IntRect(0, 0, 32, 32)),
     (false, false, true, true) -> new Sprite(spritesheet, new IntRect(32, 0, 32, 32)),
@@ -69,6 +72,10 @@ class MazeView(maze : Maze,
 
             maze.get(x, y) match {
               case CellType.Empty =>
+                if (maze.pellets.get(x,y) && (isUnlimitedView || cellInRangeOfLocal)) {
+                  pelletSprite.setPosition(new Vector2f(x * 32.0f + 8.0f, y * 32.0f + 8.0f))
+                  drawable.draw(pelletSprite)
+                }
 
               case CellType.Wall =>
                 if (isUnlimitedView || cellInRangeOfLocal) {

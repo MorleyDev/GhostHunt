@@ -4,7 +4,7 @@ import uk.co.morleydev.ghosthunt.controller.Controller
 import uk.co.morleydev.ghosthunt.model.net.{ClientId, NetworkMessage, game}
 import uk.co.morleydev.ghosthunt.model.event.sys
 import uk.co.morleydev.ghosthunt.model.event
-import uk.co.morleydev.ghosthunt.data.store.EntityComponentStore
+import uk.co.morleydev.ghosthunt.data.store.{Maze, EntityComponentStore}
 import uk.co.morleydev.ghosthunt.data.net.Client
 import uk.co.morleydev.ghosthunt.data.event.EventQueue
 import uk.co.morleydev.ghosthunt.model.component.game._
@@ -18,11 +18,17 @@ import uk.co.morleydev.ghosthunt.model.component.menu.Text
 import java.util.UUID
 import uk.co.morleydev.ghosthunt.data.ContentFactory
 
-class ClientLobbyController(entities : EntityComponentStore, client : Client, events : EventQueue, gameTime : GameTime, content : ContentFactory)
+class ClientLobbyController(entities : EntityComponentStore,
+                            client : Client,
+                            events : EventQueue,
+                            gameTime : GameTime,
+                            content : ContentFactory,
+                            maze : Maze)
   extends Controller(messages = Seq(game.AcceptJoinGameRequest.name,
                                     game.InformLeftGame.name,
                                     game.InformJoinedGame.name,
                                     game.StartGame.name)) {
+  maze.pellets.reset()
 
   val waitingMessage = entities.createEntity()
   entities.link(waitingMessage, "Text", new Text(new Vector2f(10.0f, 10.0f), 32.0f, "Waiting for game to Start"))
@@ -73,7 +79,7 @@ class ClientLobbyController(entities : EntityComponentStore, client : Client, ev
 
       case game.StartGame.name =>
         entities.removeEntity(waitingMessage)
-        events.enqueue(sys.CreateController(() => new ClientGameController(content, events, entities, client)))
+        events.enqueue(sys.CreateController(() => new ClientGameController(content, events, entities, client, maze)))
         events.enqueue(event.game.EnableLocalActors)
         kill()
     }

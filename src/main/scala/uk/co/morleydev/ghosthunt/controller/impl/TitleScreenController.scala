@@ -1,7 +1,7 @@
 package uk.co.morleydev.ghosthunt.controller.impl
 
 import uk.co.morleydev.ghosthunt.controller.Controller
-import uk.co.morleydev.ghosthunt.data.store.EntityComponentStore
+import uk.co.morleydev.ghosthunt.data.store.{Maze, EntityComponentStore}
 import uk.co.morleydev.ghosthunt.data.event.EventQueue
 import uk.co.morleydev.ghosthunt.model.component.menu.{Text, MenuOption}
 import org.jsfml.system.Vector2f
@@ -11,7 +11,7 @@ import uk.co.morleydev.ghosthunt.model.event.sys
 import uk.co.morleydev.ghosthunt.data.ContentFactory
 import java.io.FileNotFoundException
 
-class TitleScreenController(events : EventQueue, entities : EntityComponentStore, content : ContentFactory) extends Controller {
+class TitleScreenController(events : EventQueue, entities : EntityComponentStore, content : ContentFactory, maze : Maze) extends Controller {
   private val menuOptions = entities.createEntity()
   private val titleText = entities.createEntity()
   private val music = {
@@ -44,11 +44,11 @@ class TitleScreenController(events : EventQueue, entities : EntityComponentStore
   }
 
   private def onConnect() {
-    events.enqueue(sys.CreateController(() => new ClientConnectController(events, entities, content)))
+    events.enqueue(sys.CreateController(() => new ClientConnectController(events, entities, content, maze)))
   }
 
   private def onHost() {
-    events.enqueue(sys.CreateController(() => new ServerHostController(events, entities)))
+    events.enqueue(sys.CreateController(() => new ServerHostController(events, entities, maze)))
   }
 
   private def onQuit() {

@@ -12,7 +12,7 @@ object Main {
         val game = new Game(config)
         game.run()
       }
-    })).take(4)
+    })).take(3)
 
     threads.foreach(_.start())
     threads.foreach(_.join())

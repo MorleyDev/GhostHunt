@@ -1,7 +1,7 @@
 package uk.co.morleydev.ghosthunt.controller.impl
 
 import uk.co.morleydev.ghosthunt.data.event.EventQueue
-import uk.co.morleydev.ghosthunt.data.store.EntityComponentStore
+import uk.co.morleydev.ghosthunt.data.store.{Maze, EntityComponentStore}
 import uk.co.morleydev.ghosthunt.controller.Controller
 import uk.co.morleydev.ghosthunt.model.event.{Event, sys}
 import uk.co.morleydev.ghosthunt.model.component.menu.{Text, MenuOption, TextBox}
@@ -10,7 +10,7 @@ import org.jsfml.system.Vector2f
 import uk.co.morleydev.ghosthunt.controller.impl.game.ServerLobbyController
 import uk.co.morleydev.ghosthunt.data.net.Server
 
-class ServerHostController(events : EventQueue, entities : EntityComponentStore)
+class ServerHostController(events : EventQueue, entities : EntityComponentStore, maze : Maze)
   extends Controller(events = Seq(sys.ServerHosting.name, sys.FailedHostServer.name)) {
 
   private val portBox = entities.createEntity()
@@ -49,7 +49,7 @@ class ServerHostController(events : EventQueue, entities : EntityComponentStore)
       case sys.ServerHosting.name =>
         entities.removeEntity(portBox)
         entities.removeEntity(hostButton)
-        events.enqueue(sys.CreateController(() => new ServerLobbyController(entities, event.data.asInstanceOf[Server], events)))
+        events.enqueue(sys.CreateController(() => new ServerLobbyController(entities, event.data.asInstanceOf[Server], events, maze)))
         kill()
 
       case sys.FailedHostServer.name =>

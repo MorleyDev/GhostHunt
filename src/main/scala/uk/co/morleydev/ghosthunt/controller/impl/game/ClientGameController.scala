@@ -9,9 +9,9 @@ import uk.co.morleydev.ghosthunt.model.net.NetworkMessage
 import uk.co.morleydev.ghosthunt.model.event.game
 import uk.co.morleydev.ghosthunt.model.event.sys
 import uk.co.morleydev.ghosthunt.data.event.EventQueue
-import uk.co.morleydev.ghosthunt.data.store.EntityComponentStore
+import uk.co.morleydev.ghosthunt.data.store.{Maze, EntityComponentStore}
 
-class ClientGameController(content : ContentFactory, events : EventQueue, entities : EntityComponentStore, client : Client)
+class ClientGameController(content : ContentFactory, events : EventQueue, entities : EntityComponentStore, client : Client, maze : Maze)
   extends Controller(messages = Seq(net.game.GameOver.name, net.game.ReturnToLobby.name)) {
   private val music = {
     val music = content.openMusic("resource/game.ogg")
@@ -38,12 +38,12 @@ class ClientGameController(content : ContentFactory, events : EventQueue, entiti
     message.name match {
       case net.game.GameOver.name =>
         deathSound.play()
-        events.enqueue(sys.CreateController(() => new ClientGameOverScreen(net.game.GameOver.extract(message), entities, content, events, client)))
+        events.enqueue(sys.CreateController(() => new ClientGameOverScreen(net.game.GameOver.extract(message), entities, content, events, client, maze)))
 
       case net.game.ReturnToLobby.name =>
         entities.get("Actor")
           .foreach(e => entities.removeEntity(e._1))
-        events.enqueue(sys.CreateController(() => new ClientLobbyController(entities, client, events, gameTime, content)))
+        events.enqueue(sys.CreateController(() => new ClientLobbyController(entities, client, events, gameTime, content, maze)))
     }
   }
 }

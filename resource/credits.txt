@@ -27,3 +27,10 @@ player_death.ogg:
 	Released Under Creative Commons Attribution 3.0 Unported
 		Licence: http://creativecommons.org/licenses/by/3.0/
 		Source: http://soundbible.com/1706-Shot-Gun.html
+
+beep.ogg
+	Title:beepC
+	Artist: Hydranos
+	Released Under
+		Licence: http://creativecommons.org/publicdomain/zero/1.0/
+		Source: http://www.freesound.org/people/Hydranos/sounds/237706/
