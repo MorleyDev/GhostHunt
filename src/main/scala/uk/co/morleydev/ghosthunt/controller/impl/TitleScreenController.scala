@@ -11,6 +11,15 @@ import uk.co.morleydev.ghosthunt.model.event.sys
 import uk.co.morleydev.ghosthunt.data.ContentFactory
 import java.io.FileNotFoundException
 
+/**
+ * The title screen controller is responsible for the title screen itself, creating the menu options
+ * and advancing on to the appropriate controllers when the related options are selected.
+ *
+ * @param events
+ * @param entities
+ * @param content
+ * @param maze
+ */
 class TitleScreenController(events : EventQueue, entities : EntityComponentStore, content : ContentFactory, maze : Maze) extends Controller {
   private val menuOptions = entities.createEntity()
   private val titleText = entities.createEntity()

@@ -7,6 +7,11 @@ import org.jsfml.system.Vector2f
 import org.jsfml.window.Mouse.Button
 import org.jsfml.graphics.RenderWindow
 
+/**
+ * Helper for hooking between SFML's union-style events and a more functional callback approach
+ *
+ * @param window
+ */
 class SfmlWindowEvents(window : RenderWindow) {
   private var closeHandlers = Seq[() => Unit]()
   private var focusHandlers = Seq[Boolean => Unit]()

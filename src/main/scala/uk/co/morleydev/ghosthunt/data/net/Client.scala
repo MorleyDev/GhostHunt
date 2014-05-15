@@ -9,6 +9,13 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.ExecutionContext
 import uk.co.morleydev.ghosthunt.model.net.NetworkMessage
 
+/**
+ * The server maintains it's own thread for dealing with connecting to the server,
+ * sending messages to and from the server. It is thread-safe, using a concurrent queue to talk between the
+ * internal thread and the consuming thread.
+ *
+ * @param executionContent
+ */
 class Client(implicit val executionContent : ExecutionContext = ExecutionContext.Implicits.global) extends AutoCloseable {
 
   private class SocketThread(socket : Socket) extends Thread {

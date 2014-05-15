@@ -8,6 +8,13 @@ import org.jsfml.system.Vector2f
 import uk.co.morleydev.ghosthunt.data.ContentFactory
 import java.io.FileNotFoundException
 
+/**
+ * The menu option view is responsible for drawing what menus are currently on the screen to
+ * allow for them to be used as a part of the Graphical User Interface for the game.
+ *
+ * @param entityComponentStore
+ * @param content
+ */
 class MenuOptionView(entityComponentStore : EntityComponentStore,
                      content : ContentFactory)
   extends View(height = 253) {

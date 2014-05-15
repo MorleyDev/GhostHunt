@@ -8,6 +8,15 @@ import org.jsfml.graphics.{RenderTarget, IntRect, Sprite}
 import uk.co.morleydev.ghosthunt.model.component.game.{ActorDetails, Actor, Ghost}
 import org.jsfml.system.Vector2f
 
+/**
+ * The player actor view is responsible for drawing the hero with the correct sprite.
+ * It is also responsible for not drawing the hero if they do not exist, or if the local
+ * player is a ghost and cannot currently see the hero due to the hero being outside of
+ * their line of sight.
+ *
+ * @param entities
+ * @param content
+ */
 class PlayerActorView(entities : EntityComponentStore, content : ContentFactory) extends View(height = 1) {
 
   val spritesheet = {

@@ -7,6 +7,14 @@ import java.io.FileNotFoundException
 import org.jsfml.graphics.{Color, Text, RenderTarget}
 import uk.co.morleydev.ghosthunt.model.component.menu
 
+/**
+ *
+ * The text view is responsible for drawing what text is currently on the screen to
+ * allow for them to be used as a part of the Graphical User Interface for the game.
+ *
+ * @param entities
+ * @param content
+ */
 class TextView(entities : EntityComponentStore, content : ContentFactory)
   extends View(height = 254) {
 

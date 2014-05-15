@@ -11,7 +11,18 @@ import uk.co.morleydev.ghosthunt.data.event.EventQueue
 import org.jsfml.graphics.FloatRect
 import org.jsfml.system.Vector2f
 
-class ServerGameController(entities : EntityComponentStore, events : EventQueue, server : Server, maze : Maze) extends Controller(messages = Seq(net.game.Disconnected.name)) {
+/**
+ * The server game controller is in charge of the running game state, namely for detecting when collisions occur between
+ * hero and ghost, when pellets are removed from play, and when the game is ended with victory or defeat for the hero.
+ * It also detects when players disconnect, and responds by returning all clients to the lobby.
+ *
+ * @param entities
+ * @param events
+ * @param server
+ * @param maze
+ */
+class ServerGameController(entities : EntityComponentStore, events : EventQueue, server : Server, maze : Maze)
+  extends Controller(messages = Seq(net.game.Disconnected.name)) {
 
   override def update(gameTime: GameTime): Unit = {
 

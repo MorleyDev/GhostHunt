@@ -18,6 +18,18 @@ import uk.co.morleydev.ghosthunt.model.component.menu.Text
 import java.util.UUID
 import uk.co.morleydev.ghosthunt.data.ContentFactory
 
+/**
+ * The client lobby controller is responsible for joining a game, and maintaining awareness of the current
+ * actors in the game so when the game begins no entities are missing. It also reacts to commands to start the game,
+ * enabling the ClientGameController when required.
+ *
+ * @param entities
+ * @param client
+ * @param events
+ * @param gameTime
+ * @param content
+ * @param maze
+ */
 class ClientLobbyController(entities : EntityComponentStore,
                             client : Client,
                             events : EventQueue,

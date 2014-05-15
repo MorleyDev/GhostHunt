@@ -10,6 +10,13 @@ import org.jsfml.system.Vector2f
 import uk.co.morleydev.ghosthunt.controller.impl.game.ServerLobbyController
 import uk.co.morleydev.ghosthunt.data.net.Server
 
+/**
+ * The server host controller is responsible for launching the low-level server with the port the user specifies
+ *
+ * @param events
+ * @param entities
+ * @param maze
+ */
 class ServerHostController(events : EventQueue, entities : EntityComponentStore, maze : Maze)
   extends Controller(events = Seq(sys.ServerHosting.name, sys.FailedHostServer.name)) {
 

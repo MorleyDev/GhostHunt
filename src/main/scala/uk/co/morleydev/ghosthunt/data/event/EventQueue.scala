@@ -4,6 +4,9 @@ import java.util.concurrent.ConcurrentLinkedQueue
 import scala.collection.GenSeq
 import uk.co.morleydev.ghosthunt.model.event.Event
 
+/**
+ * A concurrent event queue for the enqueue and dequeue of events for cross-controller/view communication
+ */
 class EventQueue {
   private val queue = new ConcurrentLinkedQueue[Event]()
 

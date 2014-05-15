@@ -8,7 +8,12 @@ import uk.co.morleydev.ghosthunt.model.component.menu.TextBox
 import org.jsfml.system.Vector2f
 import org.jsfml.graphics.FloatRect
 
-
+/**
+ * The text box controller is responsible for updating the text boxes in the system to allow for text to be entered
+ * via the keyboard
+ *
+ * @param entities
+ */
 class TextBoxController(entities : EntityComponentStore) extends Controller(events = Seq(sys.LocalClick.name, sys.TextType.name)){
 
   override protected def onEvent(event: Event, gameTime: GameTime): Unit = {

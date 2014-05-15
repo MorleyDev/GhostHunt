@@ -9,6 +9,15 @@ import uk.co.morleydev.ghosthunt.model.net
 import uk.co.morleydev.ghosthunt.model.component.game.{ActorDetails, Actor}
 import org.jsfml.system.Vector2f
 
+/**
+ * The local actor controller is responsible for reacting to commands to move local actors, adjusting the local state
+ * and notifying the server.
+ *
+ * Local control can be enabled with EnableLocalActors event, and disabled with DisableLocalActors
+ *
+ * @param entities
+ * @param client
+ */
 class LocalActorController(entities : EntityComponentStore, client : Client) extends Controller(events =
   Seq(sys.MoveLocalUp.name,
       sys.MoveLocalDown.name,

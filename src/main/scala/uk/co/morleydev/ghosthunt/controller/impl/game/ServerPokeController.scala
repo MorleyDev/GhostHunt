@@ -9,6 +9,13 @@ import uk.co.morleydev.ghosthunt.model.component.game.Remote
 import uk.co.morleydev.ghosthunt.model.net.game
 import uk.co.morleydev.ghosthunt.data.store.EntityComponentStore
 
+/**
+ * The server poke controller continually sends a message every second to the connected clients,
+ * ensuring any disconnected clients are detected.
+ *
+ * @param entities
+ * @param server
+ */
 class ServerPokeController(entities : EntityComponentStore, server : Server) extends Controller {
 
   private var nextPokeTimer = Duration(1, duration.SECONDS)

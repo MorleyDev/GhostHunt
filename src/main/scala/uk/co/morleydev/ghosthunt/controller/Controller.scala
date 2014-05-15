@@ -5,6 +5,13 @@ import uk.co.morleydev.ghosthunt.model.GameTime
 import uk.co.morleydev.ghosthunt.model.event.Event
 import uk.co.morleydev.ghosthunt.model.net.{NetworkMessage, ClientId}
 
+/**
+ * A controller is responsible for the updating of the system, both on a frame-by-frame basis and by responsing to
+ * and emitting events and network messages as needed.
+ *
+ * @param events The process events this controller is capable of responding to
+ * @param messages The messages
+ */
 abstract class Controller(events : Seq[String] = Seq[String](),
                           messages : Seq[String] = Seq[String]()) extends Killable {
 

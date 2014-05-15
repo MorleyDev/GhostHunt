@@ -4,6 +4,12 @@ import scala.concurrent.duration.Duration
 import uk.co.morleydev.ghosthunt.model.GameTime
 import com.lambdaworks.jacks.JacksMapper
 
+
+/**
+ * The network message is used to send data over the network and communicate between clients and servers.
+ * It records the name of the message, the data inside the message (JSON-serialized) and the time that message
+ * was sent in GameTime
+ */
 case class NetworkMessage(name : String, data : String, time : Duration) extends Serializable
 
 class NullNetworkMessage

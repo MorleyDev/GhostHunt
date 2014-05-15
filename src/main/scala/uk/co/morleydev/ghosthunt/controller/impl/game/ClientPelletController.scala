@@ -8,6 +8,13 @@ import uk.co.morleydev.ghosthunt.data.store.Maze
 import uk.co.morleydev.ghosthunt.data.ContentFactory
 import java.io.FileNotFoundException
 
+/**
+ * The client pellet controller reacts to messages from the server telling the client a pellet
+ * has been collected, removing that pellet from the maze.
+ *
+ * @param maze
+ * @param content
+ */
 class ClientPelletController(maze : Maze, content : ContentFactory) extends Controller(messages = Seq(game.RemovePellet.name)) {
 
   val beep = {

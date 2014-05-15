@@ -10,6 +10,13 @@ import scala.concurrent.duration.Duration
 import uk.co.morleydev.ghosthunt.model.net.{game, NetworkMessage, ClientId}
 import uk.co.morleydev.ghosthunt.model.GameTime
 
+/**
+ * The server maintains it's own thread for dealing with connected clients, sending messages to and from those clients
+ * as well as accepting new connections. It is thread-safe, using a concurrent queue to talk between the internal threads
+ * and the consuming thread.
+ *
+ * @param executionContent
+ */
 class Server(implicit val executionContent : ExecutionContext = ExecutionContext.Implicits.global) extends AutoCloseable {
 
   private val connectedUsers = new ConcurrentHashMap[ClientId, (ConcurrentLinkedQueue[NetworkMessage], Thread)]()

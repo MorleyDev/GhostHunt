@@ -2,11 +2,18 @@ package uk.co.morleydev.ghosthunt.data.store
 
 import java.util.concurrent.ConcurrentHashMap
 
+/**
+ * Enum representing whether a cell in the maze is a wall or not
+ */
 object CellType extends Enumeration {
   val Empty = Value("Empty")
   val Wall = Value("Wall")
 }
 
+/**
+ * The maze stores the cells in the game, and whether those cells are passable or not
+ * It also stores information about what pellets are available in the game, through the PelletStore
+ */
 class Maze {
   private final val width = 20
   private final val height = 15
@@ -40,7 +47,7 @@ class Maze {
     case _ => CellType.Empty
   }
 
-  class Pellets(maze : Maze) {
+  class PelletStore(maze : Maze) {
     private val pellets = new ConcurrentHashMap[(Int, Int), Boolean]()
     private var pelletCount = 0
     private var totalPelletCount = 0
@@ -69,6 +76,6 @@ class Maze {
 
     def totalPellets = totalPelletCount
   }
-  var pellets = new Pellets(this)
+  var pellets = new PelletStore(this)
 
 }

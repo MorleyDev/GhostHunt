@@ -7,6 +7,14 @@ import uk.co.morleydev.ghosthunt.model.component.menu.TextBox
 import uk.co.morleydev.ghosthunt.data.ContentFactory
 import java.io.FileNotFoundException
 
+/**
+ *
+ * The text box view is responsible for drawing what text boxes are currently on the screen to
+ * allow for them to be used as a part of the Graphical User Interface for the game.
+ *
+ * @param entities
+ * @param content
+ */
 class TextBoxView(entities : EntityComponentStore,
                   content : ContentFactory) extends View(height = 255) {
 

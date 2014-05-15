@@ -7,6 +7,14 @@ import uk.co.morleydev.ghosthunt.data.ContentFactory
 import java.io.FileNotFoundException
 import uk.co.morleydev.ghosthunt.model.component.game.{ActorDetails, Actor, Ghost}
 
+/**
+ * The ghost actor view is responsible for drawing the ghost players that wander the maze with the correctly
+ * coloured and directional sprite.
+ *
+ *
+ * @param entities
+ * @param content
+ */
 class GhostActorView(entities : EntityComponentStore, content : ContentFactory) extends View(height = 1) {
 
   val spritesheet = {

@@ -4,6 +4,10 @@ import org.jsfml.graphics.RenderTarget
 import uk.co.morleydev.ghosthunt.view.View
 import uk.co.morleydev.ghosthunt.model.event.Event
 
+/**
+ * The view store contains the views, sorted by height, as well
+ * as the logic for passing events to views and rendering views
+ */
 class ViewStore {
   private var views: Seq[View] = Seq[View]()
 

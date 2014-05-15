@@ -4,6 +4,9 @@ import java.io.{InputStream, FileInputStream, File}
 import uk.co.morleydev.ghosthunt.util.using
 import uk.co.morleydev.ghosthunt.data.ContentFactory
 
+/**
+ * Handles loading content (textures, sounds and music) from the file system.
+ */
 class ContentFactoryFromFileSystem(root : String) extends ContentFactory {
 
   protected override def loadFile[T](filename : String, handler : InputStream => Option[T]) : Option[T] = {
@@ -16,13 +19,3 @@ class ContentFactoryFromFileSystem(root : String) extends ContentFactory {
   }
 }
 
-class ContentFactoryFromResource extends ContentFactory {
-
-  protected override def loadFile[T](filename: String, handler: InputStream => Option[T]): Option[T] = {
-    val stream = getClass.getResourceAsStream("/" + filename)
-    if (stream != null && stream.available() > 0)
-      handler(stream)
-    else
-      None
-  }
-}

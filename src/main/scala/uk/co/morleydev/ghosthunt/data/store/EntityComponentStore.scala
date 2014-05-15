@@ -5,6 +5,10 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.Map.Entry
 import uk.co.morleydev.ghosthunt.model.store.EntityId
 
+/**
+ * The entity-component store is the core of the entity component system, storing in a thread-safe manner the alive
+ * entities as well as the links between those entities and their components.
+ */
 class EntityComponentStore {
   private val entities = new ConcurrentHashMap[EntityId, ConcurrentHashMap[String, Any]]()
 

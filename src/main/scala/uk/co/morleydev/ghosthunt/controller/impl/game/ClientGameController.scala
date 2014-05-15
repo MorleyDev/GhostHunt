@@ -11,6 +11,16 @@ import uk.co.morleydev.ghosthunt.model.event.sys
 import uk.co.morleydev.ghosthunt.data.event.EventQueue
 import uk.co.morleydev.ghosthunt.data.store.{Maze, EntityComponentStore}
 
+/**
+ * The game controller for the client reacts to state change messages from the server related to the ending of a game
+ * due to win/lose conditions being met, or a return to the lobby due to a player disconnecting.
+ *
+ * @param content
+ * @param events
+ * @param entities
+ * @param client
+ * @param maze
+ */
 class ClientGameController(content : ContentFactory, events : EventQueue, entities : EntityComponentStore, client : Client, maze : Maze)
   extends Controller(messages = Seq(net.game.GameOver.name, net.game.ReturnToLobby.name)) {
   private val music = {

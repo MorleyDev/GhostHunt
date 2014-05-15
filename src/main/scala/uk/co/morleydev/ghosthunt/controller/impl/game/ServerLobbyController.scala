@@ -11,9 +11,18 @@ import uk.co.morleydev.ghosthunt.model.event
 import uk.co.morleydev.ghosthunt.model.store.EntityId
 import uk.co.morleydev.ghosthunt.model.component.menu.{MenuOption, Text}
 import org.jsfml.system.Vector2f
-import java.util.concurrent.ConcurrentLinkedQueue
+import java.util.concurrent.ConcurrentLinkedDeque
 import uk.co.morleydev.ghosthunt.data.event.EventQueue
 
+/**
+ * The server lobby controller is responsible for waiting for players to join the game, as well as noticing when waiting
+ * players disconnect. Finally, it is responsible for starting the game when the appropriate menu option is selected.
+ *
+ * @param entities
+ * @param server
+ * @param events
+ * @param maze
+ */
 class ServerLobbyController(entities : EntityComponentStore, server : Server, events : EventQueue, maze : Maze)
   extends Controller(messages = Seq[String](game.JoinGameRequest.name, game.Disconnected.name)) {
   maze.pellets.reset()
@@ -23,7 +32,7 @@ class ServerLobbyController(entities : EntityComponentStore, server : Server, ev
     1 -> entities.createEntity(),
     2 -> entities.createEntity())
 
-  private val entityQueue = new ConcurrentLinkedQueue[Int]()
+  private val entityQueue = new ConcurrentLinkedDeque[Int]()
   entityQueue.add(-1)
   entityQueue.add(0)
   entityQueue.add(1)
@@ -61,12 +70,12 @@ class ServerLobbyController(entities : EntityComponentStore, server : Server, ev
           .foreach(s => {
           if (entities.has(s._1, "Ghost")) {
             val id = entities.get(s._1)("Ghost").asInstanceOf[Ghost].id
-            entityQueue.add(id)
+            entityQueue.addLast(id)
             entities.link(textWaiting(id), "Text", new Text(new Vector2f(10.0f, 40.0f * id + 50.0f), 36.0f, "Waiting..."))
           }
           else {
             entities.link(textWaiting(-1), "Text", new Text(new Vector2f(10.0f, 40.0f * -1 + 50.0f), 36.0f, "Waiting..."))
-            entityQueue.add(-1)
+            entityQueue.addFirst(-1)
           }
           entities.removeEntity(s._1)
           entities.get("Remote")

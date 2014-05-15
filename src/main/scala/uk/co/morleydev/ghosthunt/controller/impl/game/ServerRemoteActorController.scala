@@ -9,6 +9,13 @@ import org.jsfml.system.Vector2f
 import scala.concurrent.duration
 import uk.co.morleydev.ghosthunt.data.net.Server
 
+/**
+ * The server remote actor controller is responsible for reacting to messages from clients to move actors on the server,
+ * modifying it's own state and informing other clients about the update accordingly and performing latency correction.
+ *
+ * @param entities
+ * @param server
+ */
 class ServerRemoteActorController(entities : EntityComponentStore, server : Server) extends Controller(messages = Seq(game.MoveRemoteActorOnServer.name)) {
 
   protected override def onServerMessage(client : ClientId, message : NetworkMessage, gameTime : GameTime) = {

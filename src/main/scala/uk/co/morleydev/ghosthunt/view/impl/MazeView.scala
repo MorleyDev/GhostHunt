@@ -8,6 +8,15 @@ import java.io.FileNotFoundException
 import org.jsfml.system.Vector2f
 import uk.co.morleydev.ghosthunt.model.component.game.{ActorDetails, Actor}
 
+/**
+ * The maze view is responsible for drawing the maze and pellets that are inside the maze.
+ * It is also responsible with not drawing the parts of the maze that cannot be seen, if the
+ * local player is a ghost and the parts are outside of the line of sight of the ghosts.
+ *
+ * @param maze
+ * @param entities
+ * @param content
+ */
 class MazeView(maze : Maze,
                entities : EntityComponentStore,
                content : ContentFactory) extends View(height = 0) {

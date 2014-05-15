@@ -21,6 +21,14 @@ import uk.co.morleydev.ghosthunt.view.impl._
 import uk.co.morleydev.ghosthunt.controller.impl.game._
 import uk.co.morleydev.ghosthunt.model.GameTime
 
+/**
+ * The game is the high level entry point for a client or server, containing the various data stores, controllers,
+ * views, events, and rendering system. The game is responsible for initialising the system as well as ensuring it
+ * updates at the correct frame rate and that events are passed around from the event queue to controllers and views
+ * as expected.
+ *
+ * @param config The configuration file to use to configure the game i.e screen size, input keys
+ */
 class Game(config : Configuration) extends Killable {
 
   private val renderWindow = SfmlFactory.create(config.fullscreen, config.width, config.height)
@@ -47,8 +55,8 @@ class Game(config : Configuration) extends Killable {
     gameRunningTime = Duration((gameRunningTime + dt).toNanos, duration.NANOSECONDS)
     val gameTime = new GameTime(dt, gameRunningTime)
     controllers.update(gameTime)
-    client.receive().seq.foreach(m => controllers.onClientMessage(m, gameTime))
-    server.receive().seq.foreach(m => controllers.onServerMessage(m._1, m._2, gameTime))
+    client.receive().seq.foreach(m => controllers.onClientReceiveMessage(m, gameTime))
+    server.receive().seq.foreach(m => controllers.onServerReceiveMessage(m._1, m._2, gameTime))
 
     events.dequeue().par.foreach(e => {
       e.name match {

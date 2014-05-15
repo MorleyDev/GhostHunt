@@ -9,6 +9,14 @@ import uk.co.morleydev.ghosthunt.data.net.Client
 import uk.co.morleydev.ghosthunt.model.event.sys
 import uk.co.morleydev.ghosthunt.data.event.EventQueue
 
+/**
+ * The client request game time controller will, every second the client is connected, emit a message asking for the
+ * current game time from the server's point of view. It will latency correct this time, and update the local view of
+ * the current game time if needed.
+ *
+ * @param client
+ * @param events
+ */
 class ClientRequestGameTimeController(client : Client, events : EventQueue) extends Controller(messages = Seq(game.ResponseGameTime.name)) {
 
   private var nextPokeTimer = Duration(1, duration.SECONDS)

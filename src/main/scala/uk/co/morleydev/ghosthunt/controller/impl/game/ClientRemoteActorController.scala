@@ -9,6 +9,12 @@ import uk.co.morleydev.ghosthunt.model.component.game.{Actor, Remote, ActorDetai
 import uk.co.morleydev.ghosthunt.data.store.EntityComponentStore
 import java.util.UUID
 
+/**
+ * The client remote actor controller responds to commands from the server to move actors other than the local actor,
+ * and it updates their position and direction accordingly (performing latency correction in the process).
+ *
+ * @param entities
+ */
 class ClientRemoteActorController(entities: EntityComponentStore) extends Controller(messages = Seq(game.MoveRemoteActorOnClient.name)) {
 
   protected override def onClientMessage(message : NetworkMessage, gameTime : GameTime) = {

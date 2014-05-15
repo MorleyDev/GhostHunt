@@ -9,6 +9,12 @@ import uk.co.morleydev.ghosthunt.data.store.EntityComponentStore
 import uk.co.morleydev.ghosthunt.model.component.menu.MenuOption
 import org.jsfml.graphics.FloatRect
 
+/**
+ * The menu option controller is responsible for updating the menu options when they are selected, assigning the active
+ * menu option as appropriate
+ *
+ * @param components
+ */
 class MenuOptionController(components : EntityComponentStore) extends Controller(events = Seq(sys.LocalClick.name)) {
 
   override protected def onEvent(event: Event, gameTime: GameTime): Unit = {

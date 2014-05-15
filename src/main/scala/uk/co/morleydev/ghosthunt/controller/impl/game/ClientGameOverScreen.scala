@@ -11,7 +11,18 @@ import uk.co.morleydev.ghosthunt.model.event.sys
 import uk.co.morleydev.ghosthunt.data.event.EventQueue
 import uk.co.morleydev.ghosthunt.data.net.Client
 
-class ClientGameOverScreen(val isPlayerVictory : Boolean, entities : EntityComponentStore, content : ContentFactory, events : EventQueue, client : Client, maze : Maze) extends Controller {
+/**
+ * The client game over screen displays to the players the results of a finished game, whether or not the ghosts or hero
+ * won the game. It also creates and watches the menu option to return to the lobby.
+ *
+ * @param isHeroVictory
+ * @param entities
+ * @param content
+ * @param events
+ * @param client
+ * @param maze
+ */
+class ClientGameOverScreen(val isHeroVictory : Boolean, entities : EntityComponentStore, content : ContentFactory, events : EventQueue, client : Client, maze : Maze) extends Controller {
 
   private val music = {
     val music = content.openMusic("endgame.ogg")
@@ -23,11 +34,11 @@ class ClientGameOverScreen(val isPlayerVictory : Boolean, entities : EntityCompo
   music.play()
 
   val victoryTextEntity = entities.createEntity()
-  if (isPlayerVictory) {
-    entities.link(victoryTextEntity, "Text", new Text(new Vector2f(10.0f, 10.0f), 64.0f, "The player was\nVictorious!"))
+  if (isHeroVictory) {
+    entities.link(victoryTextEntity, "Text", new Text(new Vector2f(10.0f, 10.0f), 64.0f, "The hero was\nVictorious!"))
     entities.get("Ghost").foreach(s => entities.removeEntity(s._1))
   } else {
-    entities.link(victoryTextEntity, "Text", new Text(new Vector2f(10.0f, 10.0f), 64.0f, "The player failed.\nGo Ghosts!"))
+    entities.link(victoryTextEntity, "Text", new Text(new Vector2f(10.0f, 10.0f), 64.0f, "The hero failed.\nGo Ghosts!"))
     entities.get("Player").foreach(s => entities.removeEntity(s._1))
   }
 

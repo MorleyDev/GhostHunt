@@ -8,6 +8,12 @@ import uk.co.morleydev.ghosthunt.model.event.sys._
 import org.jsfml.window.Mouse.Button
 import org.jsfml.system.Vector2f
 
+/**
+ * Maps input from SFML events to events that hold meaningful value to the game
+ *
+ * @param inputConfig
+ * @param eventQueue
+ */
 class InputMapper(inputConfig : InputConfiguration, eventQueue : EventQueue) {
 
   val keyMap = Map[Key, Event](

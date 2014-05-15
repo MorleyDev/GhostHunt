@@ -12,6 +12,15 @@ import org.jsfml.system.Vector2f
 import uk.co.morleydev.ghosthunt.controller.impl.game.ClientLobbyController
 import uk.co.morleydev.ghosthunt.data.ContentFactory
 
+/**
+ * The client connect controller is responsible for launching the low-level client with the host and port the user
+ * specifies.
+ *
+ * @param events
+ * @param entities
+ * @param content
+ * @param maze
+ */
 class ClientConnectController(events : EventQueue, entities : EntityComponentStore, content : ContentFactory, maze : Maze)
   extends Controller(events = Seq(sys.ConnectedToServer.name, sys.FailedConnectToServer.name)) {
 

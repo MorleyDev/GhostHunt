@@ -8,6 +8,13 @@ import uk.co.morleydev.ghosthunt.data.ContentFactory
 import org.jsfml.system.Vector2f
 import uk.co.morleydev.ghosthunt.model.event.{Event, game}
 
+/**
+ * The score view displays the current score of the hero in terms of pellets collected vs pellets remaining
+ * Can be turned on and off by the ShowScore and HideScore events, respectively.
+ *
+ * @param content
+ * @param maze
+ */
 class ScoreView(content : ContentFactory, maze : Maze)
   extends View(height = 254, events = Seq(game.ShowScore.name, game.HideScore.name)) {
 

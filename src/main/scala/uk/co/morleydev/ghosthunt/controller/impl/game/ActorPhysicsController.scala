@@ -7,6 +7,13 @@ import uk.co.morleydev.ghosthunt.model.component.game.Actor
 import org.jsfml.system.Vector2f
 import scala.concurrent.duration.Duration
 
+/**
+ * The actor physics controller runs the physics logic for each frame of gameplay, moving actors to their new positions
+ * and resolving collisions with walls as needed.
+ *
+ * @param entities
+ * @param maze
+ */
 class ActorPhysicsController(entities : EntityComponentStore, maze : Maze) extends Controller {
 
   private def updatePosition(actor : Actor, dt : Duration) : Actor = {

@@ -6,6 +6,11 @@ import uk.co.morleydev.ghosthunt.controller.Controller
 import uk.co.morleydev.ghosthunt.model.event.Event
 import uk.co.morleydev.ghosthunt.model.net.{NetworkMessage, ClientId}
 
+/**
+ * The controller store contains the controllers, as well
+ * as the logic for passing events and network messages to
+ * controllers and updating the controllers
+ */
 class ControllerStore {
   private val controllers: ParSet[Controller] = ParSet[Controller]()
 
@@ -21,9 +26,21 @@ class ControllerStore {
   def onEvent(event : Event, gameTime : GameTime) : Unit =
     synchronized { controllers.clone() }.par.foreach(_.handleEvent(event, gameTime))
 
-  def onClientMessage(message : NetworkMessage, gameTime : GameTime) : Unit =
+  /**
+   * Called when the client receives a message from the server
+   * @param message
+   * @param gameTime
+   */
+  def onClientReceiveMessage(message : NetworkMessage, gameTime : GameTime) : Unit =
     synchronized { controllers.clone() }.par.foreach(_.handleClientMessage(message, gameTime))
 
-  def onServerMessage(client : ClientId, message : NetworkMessage, gameTime : GameTime) : Unit =
+  /**
+   * Called when the server receives a message from a client
+   *
+   * @param client
+   * @param message
+   * @param gameTime
+   */
+  def onServerReceiveMessage(client : ClientId, message : NetworkMessage, gameTime : GameTime) : Unit =
     synchronized { controllers.clone() }.par.foreach(_.handleServerMessage(client, message, gameTime))
 }
