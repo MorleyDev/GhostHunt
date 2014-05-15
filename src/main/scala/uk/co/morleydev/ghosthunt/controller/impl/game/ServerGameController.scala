@@ -21,7 +21,7 @@ class ServerGameController(entities : EntityComponentStore, events : EventQueue,
       .map(ec => (ec._1, ec._2, ((ec._2.position.x / 32).toInt, (ec._2.position.y / 32).toInt)))
       .filter(ec => maze.pellets.get(ec._3._1, ec._3._2))
       .map(ec => (ec._3, new FloatRect(Vector2f.sub(ec._2.position, ActorDetails.halfDimensions), ActorDetails.dimensions)))
-      .filter(ec => ec._2.contains(ec._1._1 * 32.0f + 16.0f, ec._1._2 * 32.0f + 16.0f))
+      .filter(ec => ec._2.intersection(new FloatRect(ec._1._1 * 32.0f + 4.0f, ec._1._2 * 32.0f + 4.0f, 28.0f, 28.0f)) != null)
       .foreach(ec =>
     {
       maze.pellets.remove(ec._1._1, ec._1._2)
