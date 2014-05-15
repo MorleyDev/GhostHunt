@@ -60,8 +60,8 @@ class Game(config : Configuration) extends Killable {
 
         case event.sys.UpdateGameRunningTime.name =>
           val oldNew = e.data.asInstanceOf[(Duration, Duration)]
-          val newTime = oldNew._2 + (gameRunningTime - oldNew._1)
-          gameRunningTime = Duration(newTime.toNanos, duration.NANOSECONDS)
+          val newTime = oldNew._2.toNanos + (gameRunningTime.toNanos - oldNew._1.toNanos)
+          gameRunningTime = Duration(newTime, duration.NANOSECONDS)
 
         case event.sys.ConnectToServer.name =>
           val hostPort = e.data.asInstanceOf[(String, Int)]
@@ -122,6 +122,8 @@ class Game(config : Configuration) extends Killable {
     controllers.add(new ActorPhysicsController(entities, maze))
     controllers.add(new ServerPokeController(entities, server))
     controllers.add(new ClientPelletController(maze, content))
+    controllers.add(new ClientRequestGameTimeController(client, events))
+    controllers.add(new ServerResponseGameTimeController(server))
 
     views.add(new MenuOptionView(entities, content))
     views.add(new TextBoxView(entities, content))

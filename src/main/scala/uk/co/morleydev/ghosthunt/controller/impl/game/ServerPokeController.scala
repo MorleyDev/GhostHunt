@@ -15,7 +15,7 @@ class ServerPokeController(entities : EntityComponentStore, server : Server) ext
 
   override def update(gameTime: GameTime): Unit = if (server.isConnected) {
 
-    nextPokeTimer = Duration(gameTime.deltaTime.toNanos - nextPokeTimer.toNanos, duration.NANOSECONDS)
+    nextPokeTimer = Duration(nextPokeTimer.toNanos - gameTime.deltaTime.toNanos, duration.NANOSECONDS)
     if ( nextPokeTimer < Duration(0, duration.SECONDS) ) {
       nextPokeTimer = Duration(1, duration.SECONDS)
 

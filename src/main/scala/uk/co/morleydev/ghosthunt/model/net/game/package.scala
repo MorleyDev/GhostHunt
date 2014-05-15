@@ -32,4 +32,7 @@ package object game {
 
   val Disconnected = new BaseCreateNetworkMessage("Disconnected")
   val Poke = new BaseCreateNetworkMessage("Poke")
+
+  val RequestGameTime = new BaseCreateNetworkMessage("RequestGameTime")
+  val ResponseGameTime = new BaseCreateNetworkMessageWithParam[Long]("ResponseGameTime")
 }
