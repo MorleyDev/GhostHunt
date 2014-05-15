@@ -49,7 +49,7 @@ class ServerHostController(events : EventQueue, entities : EntityComponentStore)
       case sys.ServerHosting.name =>
         entities.removeEntity(portBox)
         entities.removeEntity(hostButton)
-        events.enqueue(sys.CreateController(() => new ServerLobbyController(entities, event.data.asInstanceOf[Server])))
+        events.enqueue(sys.CreateController(() => new ServerLobbyController(entities, event.data.asInstanceOf[Server], events)))
         kill()
 
       case sys.FailedHostServer.name =>

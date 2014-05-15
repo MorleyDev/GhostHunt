@@ -44,7 +44,7 @@ class TitleScreenController(events : EventQueue, entities : EntityComponentStore
   }
 
   private def onConnect() {
-    events.enqueue(sys.CreateController(() => new ClientConnectController(events, entities)))
+    events.enqueue(sys.CreateController(() => new ClientConnectController(events, entities, content)))
   }
 
   private def onHost() {
@@ -53,10 +53,10 @@ class TitleScreenController(events : EventQueue, entities : EntityComponentStore
 
   private def onQuit() {
     events.enqueue(sys.CloseGame)
-    music.stop()
   }
 
   private def closeController() {
+    music.stop()
     entities.removeEntity(menuOptions)
     entities.removeEntity(titleText)
     kill()

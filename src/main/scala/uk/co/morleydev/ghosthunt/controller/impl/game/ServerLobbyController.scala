@@ -6,17 +6,15 @@ import uk.co.morleydev.ghosthunt.model.GameTime
 import uk.co.morleydev.ghosthunt.data.store.EntityComponentStore
 import uk.co.morleydev.ghosthunt.model.component.game.{Actor, Ghost, Player, Remote}
 import uk.co.morleydev.ghosthunt.data.net.Server
+import uk.co.morleydev.ghosthunt.model.event.sys
 import uk.co.morleydev.ghosthunt.model.store.EntityId
 import uk.co.morleydev.ghosthunt.model.component.menu.{MenuOption, Text}
 import org.jsfml.system.Vector2f
 import java.util.concurrent.ConcurrentLinkedQueue
-import scala.concurrent.duration.Duration
-import scala.concurrent.duration
+import uk.co.morleydev.ghosthunt.data.event.EventQueue
 
-class ServerLobbyController(entities : EntityComponentStore, server : Server)
+class ServerLobbyController(entities : EntityComponentStore, server : Server, events : EventQueue)
   extends Controller(messages = Seq[String](game.JoinGameRequest.name, game.Disconnected.name)) {
-
-  private var nextPokeTimer = Duration(1, duration.SECONDS)
 
   private val textWaiting = Map[Int, EntityId](-1 -> entities.createEntity(),
     0 -> entities.createEntity(),
@@ -38,15 +36,6 @@ class ServerLobbyController(entities : EntityComponentStore, server : Server)
 
 
   override def update(gameTime: GameTime): Unit = {
-    nextPokeTimer = Duration(gameTime.deltaTime.toNanos - nextPokeTimer.toNanos, duration.NANOSECONDS)
-    if ( nextPokeTimer < Duration(0, duration.SECONDS) ) {
-      nextPokeTimer = Duration(1, duration.SECONDS)
-
-      entities.get("Remote")
-        .map(s => s._2("Remote").asInstanceOf[Remote].id)
-        .foreach(s => server.send(s, game.Poke(gameTime)))
-    }
-
     entities.get(startGameButton).filter(_._1 == "MenuOption").map(_._2.asInstanceOf[MenuOption].active).filter(_ > -1).foreach(menu => {
       entities.removeEntity(startGameButton)
       textWaiting.map(_._2).foreach(id => entities.removeEntity(id))
@@ -55,7 +44,7 @@ class ServerLobbyController(entities : EntityComponentStore, server : Server)
         .map(s => s._2("Remote").asInstanceOf[Remote].id)
         .foreach(s => server.send(s, game.StartGame(gameTime)))
 
-      /// TODO: Start game here
+      events.enqueue(sys.CreateController(() => new ServerGameController(entities, events, server)))
       kill()
     })
   }

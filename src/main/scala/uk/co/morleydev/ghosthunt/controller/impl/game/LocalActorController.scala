@@ -20,8 +20,6 @@ class LocalActorController(entities : EntityComponentStore, client : Client) ext
   private var isEnabled = false
 
   override protected def onEvent(event: Event, gameTime: GameTime): Unit = {
-    if (!isEnabled)
-      return
 
     event.name match {
       case game.EnableLocalActors.name => isEnabled = true
@@ -42,7 +40,9 @@ class LocalActorController(entities : EntityComponentStore, client : Client) ext
   }
 
   private def moveInDirection(dirNo : Int, dir: Vector2f, gameTime : GameTime) {
-
+    if (!isEnabled)
+      return
+    
     def moveActorInDirection(dir : Vector2f, actor : Actor) : Actor =
         actor.copy(direction = dir)
 

@@ -3,6 +3,7 @@ package uk.co.morleydev.ghosthunt.controller.impl.game
 import uk.co.morleydev.ghosthunt.controller.Controller
 import uk.co.morleydev.ghosthunt.model.net.{ClientId, NetworkMessage, game}
 import uk.co.morleydev.ghosthunt.model.event.sys
+import uk.co.morleydev.ghosthunt.model.event
 import uk.co.morleydev.ghosthunt.data.store.EntityComponentStore
 import uk.co.morleydev.ghosthunt.data.net.Client
 import uk.co.morleydev.ghosthunt.data.event.EventQueue
@@ -15,8 +16,9 @@ import scala.concurrent.duration.Duration
 import scala.concurrent.duration
 import uk.co.morleydev.ghosthunt.model.component.menu.Text
 import java.util.UUID
+import uk.co.morleydev.ghosthunt.data.ContentFactory
 
-class ClientLobbyController(entities : EntityComponentStore, client : Client, events : EventQueue, gameTime : GameTime)
+class ClientLobbyController(entities : EntityComponentStore, client : Client, events : EventQueue, gameTime : GameTime, content : ContentFactory)
   extends Controller(messages = Seq(game.AcceptJoinGameRequest.name,
                                     game.InformLeftGame.name,
                                     game.InformJoinedGame.name,
@@ -71,8 +73,8 @@ class ClientLobbyController(entities : EntityComponentStore, client : Client, ev
 
       case game.StartGame.name =>
         entities.removeEntity(waitingMessage)
-        /// TODO: Start game here
-        /// TODO: Start local controller here
+        events.enqueue(sys.CreateController(() => new ClientGameController(content, events, entities, client)))
+        events.enqueue(event.game.EnableLocalActors)
         kill()
     }
   }

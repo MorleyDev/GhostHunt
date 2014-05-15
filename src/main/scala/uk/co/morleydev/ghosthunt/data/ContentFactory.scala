@@ -1,7 +1,7 @@
 package uk.co.morleydev.ghosthunt.data
 
 import org.jsfml.graphics.{Color, Image, Font, Texture}
-import org.jsfml.audio.{SoundBuffer, Music}
+import org.jsfml.audio.{Sound, SoundBuffer, Music}
 import java.io.{IOException, InputStream}
 import uk.co.morleydev.ghosthunt.util.using
 import scala.io.Source
@@ -34,12 +34,12 @@ trait ContentFactory {
       }
     })
 
-  def loadSoundBuffer(filename: String): Option[SoundBuffer] =
-    loadFile[SoundBuffer](filename, input => {
+  def loadSound(filename: String): Option[Sound] =
+    loadFile[Sound](filename, input => {
       try {
         val buffer = new SoundBuffer()
         buffer.loadFromStream(input)
-        Some(buffer)
+        Some(new Sound(buffer))
       } catch {
         case e : IOException => None
       }

@@ -18,7 +18,8 @@ import uk.co.morleydev.ghosthunt.data.InputMapper
 import uk.co.morleydev.ghosthunt.controller.impl.{TitleScreenController, TextBoxController, MenuOptionController}
 import uk.co.morleydev.ghosthunt.data.store.{Maze, EntityComponentStore}
 import uk.co.morleydev.ghosthunt.view.impl._
-import uk.co.morleydev.ghosthunt.controller.impl.game.{ClientRemoteActorController, ServerRemoteActorController, ActorPhysicsController, LocalActorController}
+import uk.co.morleydev.ghosthunt.controller.impl.game._
+import uk.co.morleydev.ghosthunt.model.GameTime
 
 class Game(config : Configuration) extends Killable {
 
@@ -46,8 +47,8 @@ class Game(config : Configuration) extends Killable {
     gameRunningTime = Duration((gameRunningTime + dt).toNanos, duration.NANOSECONDS)
     val gameTime = new GameTime(dt, gameRunningTime)
     controllers.update(gameTime)
-    client.receive().par.foreach(m => controllers.onClientMessage(m, gameTime))
-    server.receive().par.foreach(m => controllers.onServerMessage(m._1, m._2, gameTime))
+    client.receive().seq.foreach(m => controllers.onClientMessage(m, gameTime))
+    server.receive().seq.foreach(m => controllers.onServerMessage(m._1, m._2, gameTime))
 
     events.dequeue().par.foreach(e => {
       println("Process: [%s]".format(e.name))
@@ -120,11 +121,12 @@ class Game(config : Configuration) extends Killable {
     controllers.add(new ServerRemoteActorController(entities, server))
     controllers.add(new ClientRemoteActorController(entities))
     controllers.add(new ActorPhysicsController(entities, maze))
+    controllers.add(new ServerPokeController(entities, server))
 
     views.add(new MenuOptionView(entities, content))
     views.add(new TextBoxView(entities, content))
     views.add(new TextView(entities, content))
-    views.add(new MazeView(maze, content))
+    views.add(new MazeView(maze, entities, content))
     views.add(new GhostActorView(entities, content))
     views.add(new PlayerActorView(entities, content))
   }

@@ -20,6 +20,7 @@ class GhostActorView(entities : EntityComponentStore, content : ContentFactory) 
     2 -> new Sprite(spritesheet, new IntRect(100, 100, 27, 27)))
 
   override def draw(drawable: RenderTarget): Unit = {
+
     entities.get("Ghost", "Actor")
       .map(ec => (ec._1, ec._2("Ghost").asInstanceOf[Ghost], ec._2("Actor").asInstanceOf[Actor]))
       .toList
@@ -28,7 +29,7 @@ class GhostActorView(entities : EntityComponentStore, content : ContentFactory) 
       val sprite = ghostSprite(ec._2.id)
       sprite.setPosition(ec._3.position)
       sprite.setOrigin(ActorDetails.width / 2.0f, ActorDetails.height / 2.0f)
-      sprite.setScale(ActorDetails.width / 32.0f, ActorDetails.height / 32.0f)
+      sprite.setScale(1.0f, 1.0f)
 
       if (ec._3.direction.x < 0.0f) {
         sprite.setScale(1.0f, 1.0f)

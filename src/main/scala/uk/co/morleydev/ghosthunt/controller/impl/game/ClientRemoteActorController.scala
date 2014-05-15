@@ -14,27 +14,27 @@ class ClientRemoteActorController(entities: EntityComponentStore) extends Contro
   protected override def onClientMessage(message : NetworkMessage, gameTime : GameTime) = {
     // 0 = Up, 1 = Down, 2 = Left, 3 = Right
     val clientDirection = game.MoveRemoteActorOnClient.extract(message)
-    val latency : Float = (1.0f + (gameTime.totalTime - message.time).toUnit(duration.SECONDS)).toFloat
+    val latency : Float = (gameTime.totalTime - message.time).toUnit(duration.SECONDS).toFloat
 
     val client = new ClientId(UUID.fromString(clientDirection._1))
     val direction = clientDirection._2
     val position = new Vector2f(clientDirection._3, clientDirection._4)
     direction match {
       case 0 =>
-        moveInDirection(client, new Vector2f(0.0f, -ActorDetails.speed * latency), position)
+        moveInDirection(client, new Vector2f(0.0f, -ActorDetails.speed), position, latency)
 
       case 1 =>
-        moveInDirection(client, new Vector2f(0.0f, ActorDetails.speed * latency), position)
+        moveInDirection(client, new Vector2f(0.0f, ActorDetails.speed), position, latency)
 
       case 2 =>
-        moveInDirection(client, new Vector2f(-ActorDetails.speed * latency, 0.0f), position)
+        moveInDirection(client, new Vector2f(-ActorDetails.speed, 0.0f), position, latency)
 
       case 3 =>
-        moveInDirection(client, new Vector2f(ActorDetails.speed * latency, 0.0f), position)
+        moveInDirection(client, new Vector2f(ActorDetails.speed, 0.0f), position, latency)
     }
   }
 
-  private def moveInDirection(client : ClientId, dir: Vector2f, pos : Vector2f) {
+  private def moveInDirection(client : ClientId, dir: Vector2f, pos : Vector2f, latency : Float) {
 
     def moveActorInDirection(dir : Vector2f, actor : Actor) : Actor =
       actor.copy(direction = dir)
@@ -42,7 +42,7 @@ class ClientRemoteActorController(entities: EntityComponentStore) extends Contro
     entities.get("Actor", "Remote")
       .filter(ec => ec._2("Remote").asInstanceOf[Remote].id == client)
       .map(ec => (ec._1, ec._2("Actor").asInstanceOf[Actor]))
-      .map(ec => (ec._1, ec._2.copy(position = pos)))
+      .map(ec => (ec._1, ec._2.copy(position = Vector2f.add(pos, Vector2f.mul(dir, latency)))))
       .map(ec => (ec._1, moveActorInDirection(dir, ec._2)))
       .foreach(ec => entities.link(ec._1, "Actor", ec._2))
   }

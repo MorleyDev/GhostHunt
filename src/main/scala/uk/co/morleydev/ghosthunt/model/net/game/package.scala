@@ -19,13 +19,13 @@ package object game {
   val JoinGameRequest = new BaseCreateNetworkMessage("JoinGameRequest")
 
   val AcceptJoinGameRequest = new BaseCreateNetworkMessageWithParam[AcceptJoinGameRequest]("AcceptJoinGameRequest")
-  val InformJoinedGame = new BaseCreateNetworkMessageWithParam[(Int, String)]("InformJoinedGame")
-  val InformLeftGame = new BaseCreateNetworkMessageWithParam[String]("InformLeftGame")
-  val MoveRemoteActorOnServer = new BaseCreateNetworkMessageWithParam[(Int, Float, Float)]("MoveRemoteActorOnServer")
-  val MoveRemoteActorOnClient = new BaseCreateNetworkMessageWithParam[(String, Int, Float, Float)]("MoveRemoteActorOnClient")
+  val InformJoinedGame = new BaseCreateNetworkMessageWithParam[(Int, String)]("InformJoinedGame") // actor Id (-1 = Player, 0,1,2 = Ghost)
+  val InformLeftGame = new BaseCreateNetworkMessageWithParam[String]("InformLeftGame") // ClientId
+  val MoveRemoteActorOnServer = new BaseCreateNetworkMessageWithParam[(Int, Float, Float)]("MoveRemoteActorOnServer") // Direction (0U,1D,2L,3R), xpos, ypos
+  val MoveRemoteActorOnClient = new BaseCreateNetworkMessageWithParam[(String, Int, Float, Float)]("MoveRemoteActorOnClient") // ClientId, Direction (0U,1D,2L,3R), xpos, ypos
 
   val StartGame = new BaseCreateNetworkMessage("StartGame")
-  val GameOver = new BaseCreateNetworkMessage("GameOver")
+  val GameOver = new BaseCreateNetworkMessageWithParam[Boolean]("GameOver") // True = is player victory, false = is ghost
   val ReturnToLobby = new BaseCreateNetworkMessage("ReturnToLobby")
 
   val Disconnected = new BaseCreateNetworkMessage("Disconnected")
