@@ -5,4 +5,7 @@ package object game {
     def apply(data : T) : Event =
       new Event(name, data)
   }
+
+  val EnableLocalActors = new Event("EnableLocalActors")
+  val DisableLocalActors = new Event("DisableLocalActors")
 }
