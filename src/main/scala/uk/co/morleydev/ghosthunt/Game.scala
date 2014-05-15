@@ -18,9 +18,7 @@ import uk.co.morleydev.ghosthunt.data.InputMapper
 import uk.co.morleydev.ghosthunt.controller.impl.{TitleScreenController, TextBoxController, MenuOptionController}
 import uk.co.morleydev.ghosthunt.data.store.{Maze, EntityComponentStore}
 import uk.co.morleydev.ghosthunt.view.impl._
-import uk.co.morleydev.ghosthunt.controller.impl.game.{ActorPhysicsController, LocalActorController}
-import uk.co.morleydev.ghosthunt.model.component.game.{ActorDetails, Local, Actor, Player}
-import org.jsfml.system.Vector2f
+import uk.co.morleydev.ghosthunt.controller.impl.game.{ClientRemoteActorController, ServerRemoteActorController, ActorPhysicsController, LocalActorController}
 
 class Game(config : Configuration) extends Killable {
 
@@ -48,18 +46,22 @@ class Game(config : Configuration) extends Killable {
     gameRunningTime = Duration((gameRunningTime + dt).toNanos, duration.NANOSECONDS)
     val gameTime = new GameTime(dt, gameRunningTime)
     controllers.update(gameTime)
+    client.receive().par.foreach(m => controllers.onClientMessage(m, gameTime))
+    server.receive().par.foreach(m => controllers.onServerMessage(m._1, m._2, gameTime))
 
     events.dequeue().par.foreach(e => {
       println("Process: [%s]".format(e.name))
       e.name match {
         case event.sys.CreateController.name =>
-          controllers.add(e.data.asInstanceOf[Controller])
+          controllers.add(e.data.asInstanceOf[() => Controller]())
 
         case event.sys.CreateView.name =>
           views.add(e.data.asInstanceOf[View])
 
         case event.sys.UpdateGameRunningTime.name =>
-          gameRunningTime = Duration(e.data.asInstanceOf[Duration].toNanos, duration.NANOSECONDS)
+          val oldNew = e.data.asInstanceOf[(Duration, Duration)]
+          val newTime = oldNew._2 + (gameRunningTime - oldNew._1)
+          gameRunningTime = Duration(newTime.toNanos, duration.NANOSECONDS)
 
         case event.sys.ConnectToServer.name =>
           val hostPort = e.data.asInstanceOf[(String, Int)]
@@ -95,8 +97,6 @@ class Game(config : Configuration) extends Killable {
           views.onEvent(e)
       }
     })
-    client.receive().par.foreach(m => controllers.onClientMessage(m, gameTime))
-    server.receive().par.foreach(m => controllers.onServerMessage(m._1, m._2, gameTime))
   }
 
   def draw(): Unit = {
@@ -106,7 +106,7 @@ class Game(config : Configuration) extends Killable {
   }
 
   def onStart(): Unit = {
-    windowEvents.onClosed(kill)
+    windowEvents.onClosed(() => events.enqueue(event.sys.CloseGame))
 
     val inputMapper = new InputMapper(config.input, events)
     windowEvents.onKey(inputMapper.apply)
@@ -116,7 +116,9 @@ class Game(config : Configuration) extends Killable {
     controllers.add(new MenuOptionController(entities))
     controllers.add(new TextBoxController(entities))
     controllers.add(new TitleScreenController(events, entities))
-    controllers.add(new LocalActorController(entities))
+    controllers.add(new LocalActorController(entities, client))
+    controllers.add(new ServerRemoteActorController(entities, server))
+    controllers.add(new ClientRemoteActorController(entities))
     controllers.add(new ActorPhysicsController(entities, maze))
 
     views.add(new MenuOptionView(entities, contentFactory))

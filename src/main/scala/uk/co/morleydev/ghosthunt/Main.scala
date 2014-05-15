@@ -7,7 +7,14 @@ object Main {
   def main(args : Array[String]) {
     val config = Configuration.loadOrWrite("config.json")
 
-    val game = new Game(config)
-    game.run()
+    val threads = Iterator.continually(new Thread(new Runnable {
+      override def run(): Unit = {
+        val game = new Game(config)
+        game.run()
+      }
+    })).take(4)
+
+    threads.foreach(_.start())
+    threads.foreach(_.join())
   }
 }

@@ -34,11 +34,11 @@ class TitleScreenController(events : EventQueue, entities : EntityComponentStore
   }
 
   private def onConnect() {
-    events.enqueue(sys.CreateController(new ClientConnectController(events, entities)))
+    events.enqueue(sys.CreateController(() => new ClientConnectController(events, entities)))
   }
 
   private def onHost() {
-    events.enqueue(sys.CreateController(new ServerHostController(events, entities)))
+    events.enqueue(sys.CreateController(() => new ServerHostController(events, entities)))
   }
 
   private def onQuit() {

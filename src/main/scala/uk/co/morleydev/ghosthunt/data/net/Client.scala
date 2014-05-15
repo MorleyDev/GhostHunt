@@ -65,17 +65,22 @@ class Client(implicit val executionContent : ExecutionContext = ExecutionContext
   private val outboundMessageQueue = new ConcurrentLinkedQueue[NetworkMessage]()
   private val jsocket = new java.net.Socket()
 
-  private lazy val networkThread = new SocketThread(jsocket)
+  private var networkThread : SocketThread = null
 
-  def connect(host : String, port : Int) : Unit =
+  def connect(host : String, port : Int) : Unit = {
+    close()
+    networkThread = new SocketThread(jsocket)
     networkThread.start(host, port)
+  }
 
-  def close() : Unit =
+  def close() : Unit = {
     if (isConnected) {
       mIsConnected = false
       networkThread.join()
       jsocket.close()
     }
+    mIsFailedConnect = false
+  }
 
   def receive() : GenSeq[NetworkMessage] =
     Iterator.continually(receivedMessageQueue.poll())

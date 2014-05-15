@@ -4,10 +4,12 @@ import uk.co.morleydev.ghosthunt.controller.Controller
 import uk.co.morleydev.ghosthunt.model.event.{Event, sys}
 import uk.co.morleydev.ghosthunt.model.GameTime
 import uk.co.morleydev.ghosthunt.data.store.EntityComponentStore
+import uk.co.morleydev.ghosthunt.data.net.Client
+import uk.co.morleydev.ghosthunt.model.net.game
 import uk.co.morleydev.ghosthunt.model.component.game.{ActorDetails, Actor}
 import org.jsfml.system.Vector2f
 
-class LocalActorController(entities : EntityComponentStore) extends Controller(events =
+class LocalActorController(entities : EntityComponentStore, client : Client) extends Controller(events =
   Seq(sys.MoveLocalUp.name,
       sys.MoveLocalDown.name,
       sys.MoveLocalLeft.name,
@@ -16,27 +18,30 @@ class LocalActorController(entities : EntityComponentStore) extends Controller(e
   override protected def onEvent(event: Event, gameTime: GameTime): Unit = {
     event.name match {
       case sys.MoveLocalUp.name =>
-        moveInDirection(new Vector2f(0.0f, -ActorDetails.speed))
+        moveInDirection(0, new Vector2f(0.0f, -ActorDetails.speed), gameTime)
 
       case sys.MoveLocalDown.name =>
-        moveInDirection(new Vector2f(0.0f, ActorDetails.speed))
+        moveInDirection(1, new Vector2f(0.0f, ActorDetails.speed), gameTime)
 
       case sys.MoveLocalLeft.name =>
-        moveInDirection(new Vector2f(-ActorDetails.speed, 0.0f))
+        moveInDirection(2, new Vector2f(-ActorDetails.speed, 0.0f), gameTime)
 
       case sys.MoveLocalRight.name =>
-        moveInDirection(new Vector2f(ActorDetails.speed, 0.0f))
+        moveInDirection(3, new Vector2f(ActorDetails.speed, 0.0f), gameTime)
     }
   }
 
-  private def moveInDirection(dir: Vector2f) {
+  private def moveInDirection(dirNo : Int, dir: Vector2f, gameTime : GameTime) {
 
     def moveActorInDirection(dir : Vector2f, actor : Actor) : Actor =
         actor.copy(direction = dir)
 
     entities.get("Actor", "Local")
       .map(ec => (ec._1, ec._2("Actor").asInstanceOf[Actor]))
-      .map(ec => (ec._1, moveActorInDirection(dir, ec._2)))
+      .map(ec => {
+        client.send(game.MoveRemoteActorOnServer((dirNo, ec._2.position.x, ec._2.position.y), gameTime))
+        (ec._1, moveActorInDirection(dir, ec._2))
+      })
       .foreach(ec => entities.link(ec._1, "Actor", ec._2))
   }
 }

@@ -2,12 +2,13 @@ package uk.co.morleydev.ghosthunt.data.net
 
 import scala.collection.{JavaConversions, GenSeq}
 import java.util.concurrent.{ConcurrentHashMap, ConcurrentLinkedQueue}
-import java.net.{Socket, InetSocketAddress, ServerSocket}
+import java.net.{SocketException, Socket, InetSocketAddress, ServerSocket}
 import java.io._
 import uk.co.morleydev.ghosthunt.util.using
 import scala.concurrent._
 import scala.concurrent.duration.Duration
-import uk.co.morleydev.ghosthunt.model.net.{NetworkMessage, ClientId}
+import uk.co.morleydev.ghosthunt.model.net.{game, NetworkMessage, ClientId}
+import uk.co.morleydev.ghosthunt.model.GameTime
 
 class Server(implicit val executionContent : ExecutionContext = ExecutionContext.Implicits.global) extends AutoCloseable {
 
@@ -57,11 +58,12 @@ class Server(implicit val executionContent : ExecutionContext = ExecutionContext
       } catch {
         case e: Exception =>
           e.printStackTrace()
+          receivedMessageQueue.add(clientId, game.Disconnected.apply(new GameTime(Duration(0, duration.SECONDS), Duration(0, duration.SECONDS))))
       }
     }
   }
 
-  private lazy val serverAcceptThread = new ServerAcceptThread()
+  private var serverAcceptThread : ServerAcceptThread = null
 
   private class ServerAcceptThread extends Thread {
 
@@ -104,8 +106,11 @@ class Server(implicit val executionContent : ExecutionContext = ExecutionContext
   private val receivedMessageQueue = new ConcurrentLinkedQueue[(ClientId, NetworkMessage)]()
   private val socketServer = new ServerSocket()
 
-  def listen(port: Int): Unit =
+  def listen(port: Int): Unit = {
+    close()
+    serverAcceptThread = new ServerAcceptThread()
     serverAcceptThread.start(port)
+  }
 
   def close(): Unit = {
     if (mIsConnected) {
@@ -114,6 +119,7 @@ class Server(implicit val executionContent : ExecutionContext = ExecutionContext
       serverAcceptThread.join()
       JavaConversions.iterableAsScalaIterable(connectedUsers.entrySet()).foreach(e => e.getValue._2.join())
     }
+    mIsFailed = false
   }
 
   def receive(): GenSeq[(ClientId, NetworkMessage)] = {
@@ -124,6 +130,7 @@ class Server(implicit val executionContent : ExecutionContext = ExecutionContext
 
   def send(clientId: ClientId, message: NetworkMessage): Unit =
     JavaConversions.iterableAsScalaIterable(connectedUsers.entrySet())
+      .filter(f => f.getKey == clientId)
       .foreach(e => e.getValue._1.add(message))
 
   def isConnected: Boolean =

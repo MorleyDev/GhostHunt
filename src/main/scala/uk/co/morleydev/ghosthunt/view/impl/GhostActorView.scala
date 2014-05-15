@@ -22,6 +22,8 @@ class GhostActorView(entities : EntityComponentStore, content : ContentFactory) 
   override def draw(drawable: RenderTarget): Unit = {
     entities.get("Ghost", "Actor")
       .map(ec => (ec._1, ec._2("Ghost").asInstanceOf[Ghost], ec._2("Actor").asInstanceOf[Actor]))
+      .toList
+      .sortBy(_._2.id)
       .foreach(ec => {
       val sprite = ghostSprite(ec._2.id)
       sprite.setPosition(ec._3.position)
