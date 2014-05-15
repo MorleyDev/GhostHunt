@@ -38,7 +38,7 @@ class PlayerActorView(entities : EntityComponentStore, content : ContentFactory)
       .foreach(ec => {
 
       playerSprite.setPosition(ec._2.position)
-      playerSprite.setOrigin(16.0f, 16.0f)
+      playerSprite.setOrigin(ActorDetails.halfDimensions)
 
       if (ec._2.direction.x < 0.0f) {
         playerSprite.setScale(1.0f, 1.0f)

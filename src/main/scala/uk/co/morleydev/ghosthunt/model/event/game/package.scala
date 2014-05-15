@@ -8,4 +8,7 @@ package object game {
 
   val EnableLocalActors = new Event("EnableLocalActors")
   val DisableLocalActors = new Event("DisableLocalActors")
+
+  val ShowScore = new Event("ShowScore")
+  val HideScore = new Event("HideScore")
 }

@@ -7,6 +7,7 @@ import uk.co.morleydev.ghosthunt.data.store.{Maze, EntityComponentStore}
 import uk.co.morleydev.ghosthunt.model.component.game.{Actor, Ghost, Player, Remote}
 import uk.co.morleydev.ghosthunt.data.net.Server
 import uk.co.morleydev.ghosthunt.model.event.sys
+import uk.co.morleydev.ghosthunt.model.event
 import uk.co.morleydev.ghosthunt.model.store.EntityId
 import uk.co.morleydev.ghosthunt.model.component.menu.{MenuOption, Text}
 import org.jsfml.system.Vector2f
@@ -45,6 +46,7 @@ class ServerLobbyController(entities : EntityComponentStore, server : Server, ev
         .map(s => s._2("Remote").asInstanceOf[Remote].id)
         .foreach(s => server.send(s, game.StartGame(gameTime)))
 
+      events.enqueue(event.game.ShowScore)
       events.enqueue(sys.CreateController(() => new ServerGameController(entities, events, server, maze)))
       kill()
     })

@@ -130,6 +130,7 @@ class Game(config : Configuration) extends Killable {
     views.add(new MazeView(maze, entities, content))
     views.add(new GhostActorView(entities, content))
     views.add(new PlayerActorView(entities, content))
+    views.add(new ScoreView(content, maze))
   }
 
   def onEnd(): Unit = {

@@ -28,7 +28,7 @@ class GhostActorView(entities : EntityComponentStore, content : ContentFactory) 
       .foreach(ec => {
       val sprite = ghostSprite(ec._2.id)
       sprite.setPosition(ec._3.position)
-      sprite.setOrigin(ActorDetails.width / 2.0f, ActorDetails.height / 2.0f)
+      sprite.setOrigin(ActorDetails.halfDimensions)
       sprite.setScale(1.0f, 1.0f)
 
       if (ec._3.direction.x < 0.0f) {

@@ -43,11 +43,13 @@ class Maze {
   class Pellets(maze : Maze) {
     private val pellets = new ConcurrentHashMap[(Int, Int), Boolean]()
     private var pelletCount = 0
+    private var totalPelletCount = 0
     reset()
 
     def reset() = {
       pellets.clear()
       pelletCount = 0
+      totalPelletCount = 0
       (0 to maze.getWidth-1).map(x => {
         (0 to maze.getHeight-1).map(y => {
           val containsPellet = maze.get(x, y) == CellType.Empty
@@ -56,6 +58,7 @@ class Maze {
             pelletCount = pelletCount + 1
         })
       })
+      totalPelletCount = pelletCount
     }
 
     def get(x : Int, y : Int) : Boolean = pellets.get((x,y))
@@ -63,6 +66,8 @@ class Maze {
     def remove(x : Int, y : Int) : Unit = if ( pellets.put((x,y), false) ) pelletCount = pelletCount - 1
 
     def countPellets = pelletCount
+
+    def totalPellets = totalPelletCount
   }
   var pellets = new Pellets(this)
 

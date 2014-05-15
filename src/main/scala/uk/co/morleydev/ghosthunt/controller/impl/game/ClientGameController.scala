@@ -3,7 +3,7 @@ package uk.co.morleydev.ghosthunt.controller.impl.game
 import uk.co.morleydev.ghosthunt.controller.Controller
 import uk.co.morleydev.ghosthunt.data.ContentFactory
 import uk.co.morleydev.ghosthunt.data.net.Client
-import uk.co.morleydev.ghosthunt.model.{GameTime, net}
+import uk.co.morleydev.ghosthunt.model.{event, GameTime, net}
 import java.io.FileNotFoundException
 import uk.co.morleydev.ghosthunt.model.net.NetworkMessage
 import uk.co.morleydev.ghosthunt.model.event.game
@@ -39,11 +39,12 @@ class ClientGameController(content : ContentFactory, events : EventQueue, entiti
       case net.game.GameOver.name =>
         deathSound.play()
         events.enqueue(sys.CreateController(() => new ClientGameOverScreen(net.game.GameOver.extract(message), entities, content, events, client, maze)))
+        events.enqueue(event.game.HideScore)
 
       case net.game.ReturnToLobby.name =>
-        entities.get("Actor")
-          .foreach(e => entities.removeEntity(e._1))
+        entities.get("Actor").foreach(e => entities.removeEntity(e._1))
         events.enqueue(sys.CreateController(() => new ClientLobbyController(entities, client, events, gameTime, content, maze)))
+        events.enqueue(event.game.HideScore)
     }
   }
 }

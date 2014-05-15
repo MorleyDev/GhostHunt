@@ -80,6 +80,7 @@ class ClientLobbyController(entities : EntityComponentStore,
       case game.StartGame.name =>
         entities.removeEntity(waitingMessage)
         events.enqueue(sys.CreateController(() => new ClientGameController(content, events, entities, client, maze)))
+        events.enqueue(event.game.ShowScore)
         events.enqueue(event.game.EnableLocalActors)
         kill()
     }

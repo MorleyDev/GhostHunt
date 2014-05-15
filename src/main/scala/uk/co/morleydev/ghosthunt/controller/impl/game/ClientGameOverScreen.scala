@@ -23,9 +23,10 @@ class ClientGameOverScreen(val isPlayerVictory : Boolean, entities : EntityCompo
   music.play()
 
   val victoryTextEntity = entities.createEntity()
-  if (isPlayerVictory)
+  if (isPlayerVictory) {
     entities.link(victoryTextEntity, "Text", new Text(new Vector2f(10.0f, 10.0f), 64.0f, "The player was\nVictorious!"))
-  else {
+    entities.get("Ghost").foreach(s => entities.removeEntity(s._1))
+  } else {
     entities.link(victoryTextEntity, "Text", new Text(new Vector2f(10.0f, 10.0f), 64.0f, "The player failed.\nGo Ghosts!"))
     entities.get("Player").foreach(s => entities.removeEntity(s._1))
   }
