@@ -6,16 +6,18 @@ import uk.co.morleydev.ghosthunt.model.GameTime
 import scala.concurrent.duration
 import org.jsfml.system.Vector2f
 import uk.co.morleydev.ghosthunt.model.component.game.{Actor, Remote, ActorDetails}
-import uk.co.morleydev.ghosthunt.data.store.EntityComponentStore
+import uk.co.morleydev.ghosthunt.data.store.{Maze, EntityComponentStore}
 import java.util.UUID
+import scala.concurrent.duration.Duration
 
 /**
  * The client remote actor controller responds to commands from the server to move actors other than the local actor,
  * and it updates their position and direction accordingly (performing latency correction in the process).
  *
  * @param entities
+ * @param maze
  */
-class ClientRemoteActorController(entities: EntityComponentStore) extends Controller(messages = Seq(game.MoveRemoteActorOnClient.name)) {
+class ClientRemoteActorController(entities: EntityComponentStore, maze : Maze) extends Controller(messages = Seq(game.MoveRemoteActorOnClient.name)) {
 
   protected override def onClientMessage(message : NetworkMessage, gameTime : GameTime) = {
     // 0 = Up, 1 = Down, 2 = Left, 3 = Right
@@ -45,7 +47,8 @@ class ClientRemoteActorController(entities: EntityComponentStore) extends Contro
     entities.get("Actor", "Remote")
       .filter(ec => ec._2("Remote").asInstanceOf[Remote].id == client)
       .map(ec => (ec._1, ec._2("Actor").asInstanceOf[Actor]))
-      .map(ec => (ec._1, ec._2.copy(position = Vector2f.add(pos, Vector2f.mul(dir, latency)), direction = dir)))
+      .map(ec => (ec._1, ec._2.copy(position = UpdateActorPosition(maze, pos, dir, Duration(latency.toDouble, duration.SECONDS)))))
+      .map(ec => (ec._1, ec._2.copy(direction = dir)))
       .foreach(ec => entities.link(ec._1, "Actor", ec._2))
   }
 }
