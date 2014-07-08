@@ -1,7 +1,13 @@
 # Ghost Hunt - Multiplayer Prototype
 
 ## Description
-Written for university coursework, this is a multi-player game modeled after Pac-Man where the player and ghosts are all human players. The game is written in Scala using JSFML for graphics and audio. To run, download, unzip and launch either the ghosthunt shell script or the ghosthunt.bat batch file in the bin directory.
+Written for university coursework, this is a multi-player game modeled after Pac-Man where the player and ghosts are all human players. The game is written in Scala using JSFML for graphics and audio. To run, download the [latest release](https://github.com/MorleyDev/GhostHunt/releases), unzip and launch either the ghosthunt shell script or the ghosthunt.bat batch file in the bin directory.
+
+## Compilation
+To compile and package, clone or download the repository and with the latest version of sbt on the PATH run the following command in the command line:
+> sbt compile universal:package-bin
+
+A zip file containing the compiled binaries, similar to the one downloadable through the above link, can then be found in target/universal.
 
 ## Controls
 ### In-Game
